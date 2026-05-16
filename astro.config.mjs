@@ -8,6 +8,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
 	site: 'https://infomoa.kr',
 	server: { port: 4331 },
+	devToolbar: { enabled: false },
 	integrations: [
 		mdx(),
 		sitemap({
