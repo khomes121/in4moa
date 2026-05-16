@@ -7,6 +7,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://infomoa.kr',
+	server: { port: 4331 },
 	integrations: [mdx(), sitemap()],
 	fonts: [
 		{
