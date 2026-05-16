@@ -2,35 +2,44 @@
 
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://infomoa.kr',
 	server: { port: 4331 },
-	integrations: [mdx(), sitemap()],
-	fonts: [
-		{
-			provider: fontProviders.local(),
-			name: 'Atkinson',
-			cssVariable: '--font-atkinson',
-			fallbacks: ['sans-serif'],
-			options: {
-				variants: [
-					{
-						src: ['./src/assets/fonts/atkinson-regular.woff'],
-						weight: 400,
-						style: 'normal',
-						display: 'swap',
-					},
-					{
-						src: ['./src/assets/fonts/atkinson-bold.woff'],
-						weight: 700,
-						style: 'normal',
-						display: 'swap',
-					},
-				],
+	integrations: [
+		mdx(),
+		sitemap({
+			changefreq: 'weekly',
+			priority: 0.7,
+			lastmod: new Date(),
+			i18n: {
+				defaultLocale: 'ko',
+				locales: { ko: 'ko-KR' },
 			},
-		},
+			serialize(item) {
+				const url = item.url;
+				if (/^https:\/\/infomoa\.kr\/?$/.test(url)) {
+					return { ...item, priority: 1.0, changefreq: 'daily' };
+				}
+				if (/\/category\//.test(url)) {
+					return { ...item, priority: 0.8, changefreq: 'daily' };
+				}
+				if (/\/policy-feed\//.test(url)) {
+					return { ...item, priority: 0.8, changefreq: 'daily' };
+				}
+				if (/\/blog\/[^/]+\/?$/.test(url)) {
+					return { ...item, priority: 0.7, changefreq: 'monthly' };
+				}
+				if (/\/blog\/?$/.test(url)) {
+					return { ...item, priority: 0.7, changefreq: 'weekly' };
+				}
+				if (/\/about/.test(url)) {
+					return { ...item, priority: 0.4, changefreq: 'yearly' };
+				}
+				return item;
+			},
+		}),
 	],
 });

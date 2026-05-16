@@ -20,142 +20,34 @@ const fetchedAt = new Date();
 <html lang="ko">
 	<head>
 		<BaseHead
-			title={`정책 브리핑 — ${SITE_TITLE}`}
-			description="정부 보도자료를 인포모아 7대축으로 자동 분류한 라이브 피드. 정책브리핑(korea.kr) 출처."
+			title={`정책 브리핑 · ${SITE_TITLE}`}
+			description="정부 보도자료를 인포모아 7대축으로 자동 분류한 라이브 피드. 정책브리핑(korea.kr) 출처, KOGL 1유형."
 		/>
-		<style>
-			main {
-				width: 960px;
-				max-width: calc(100% - 2em);
-				margin: 0 auto;
-				padding: 2em 1em 4em;
-			}
-			.hero {
-				text-align: center;
-				padding: 1em 0 2em;
-			}
-			.hero h1 {
-				margin: 0 0 0.3em;
-				font-size: 2.2rem;
-			}
-			.hero p {
-				margin: 0.2em 0;
-				color: rgb(var(--gray));
-			}
-			.hero .meta {
-				font-size: 0.85rem;
-			}
-			.hero .meta a {
-				color: rgb(var(--gray-dark));
-			}
-			.cat-block {
-				margin: 2.4em 0;
-			}
-			.cat-block h2 {
-				display: flex;
-				align-items: baseline;
-				gap: 0.4em;
-				font-size: 1.35rem;
-				margin: 0 0 0.8em;
-				padding-bottom: 0.3em;
-				border-bottom: 2px solid rgba(var(--accent), 0.4);
-			}
-			.cat-block h2 .count {
-				font-size: 0.9rem;
-				color: rgb(var(--gray));
-				font-weight: 400;
-			}
-			.items {
-				list-style: none;
-				padding: 0;
-				margin: 0;
-				display: flex;
-				flex-direction: column;
-				gap: 0.7em;
-			}
-			.items a {
-				display: block;
-				padding: 0.9em 1.1em;
-				border-radius: 10px;
-				background: white;
-				border: 1px solid rgba(var(--gray-light), 1);
-				text-decoration: none;
-				color: rgb(var(--black));
-				transition: border-color 0.15s ease;
-			}
-			.items a:hover {
-				border-color: rgba(var(--accent), 0.6);
-			}
-			.items h3 {
-				margin: 0 0 0.35em;
-				font-size: 1.02rem;
-				line-height: 1.35;
-			}
-			.item-meta {
-				display: flex;
-				gap: 0.6em;
-				font-size: 0.8rem;
-				color: rgb(var(--gray));
-				margin: 0 0 0.35em;
-				flex-wrap: wrap;
-			}
-			.ministry {
-				display: inline-block;
-				padding: 0 0.5em;
-				background: rgba(var(--accent), 0.15);
-				border-radius: 999px;
-				color: rgb(var(--gray-dark));
-				font-weight: 600;
-			}
-			.summary {
-				margin: 0;
-				font-size: 0.88rem;
-				color: rgb(var(--gray));
-				line-height: 1.45;
-				display: -webkit-box;
-				-webkit-line-clamp: 2;
-				-webkit-box-orient: vertical;
-				overflow: hidden;
-			}
-			.empty {
-				text-align: center;
-				color: rgb(var(--gray));
-				padding: 2em 0;
-			}
-			.disclaimer {
-				margin-top: 3em;
-				padding: 1em 1.2em;
-				background: rgba(var(--gray-light), 0.6);
-				border-left: 4px solid rgba(var(--accent), 0.6);
-				border-radius: 6px;
-				font-size: 0.88rem;
-				color: rgb(var(--gray-dark));
-			}
-		</style>
 	</head>
 	<body>
 		<Header />
-		<main>
-			<section class="hero">
-				<h1>📡 정책 브리핑</h1>
-				<p>정부 보도자료를 인포모아 7대 카테고리로 자동 분류한 라이브 피드</p>
+		<main id="main" class="container">
+			<section class="feed-header">
+				<p class="eyebrow">📡 라이브 피드</p>
+				<h1>정책 브리핑</h1>
+				<p class="lead">정부 보도자료를 인포모아 7대 카테고리로 자동 분류해 보여드립니다.</p>
 				<p class="meta">
 					총 {totalCount}건 · <FormattedDate date={fetchedAt} /> 빌드 시 수집 · 출처:
-					<a href="https://www.korea.kr" target="_blank" rel="noopener">정책브리핑(korea.kr)</a> · KOGL
-					제1유형
+					<a href="https://www.korea.kr" target="_blank" rel="noopener">정책브리핑(korea.kr)</a> ·
+					KOGL 제1유형
 				</p>
 			</section>
 
 			{
 				totalCount === 0 ? (
 					<p class="empty">
-						현재 받아온 항목이 없습니다. RSS 응답 실패 또는 빌드 캐시 문제일 수 있어요. 잠시 후 다시 확인해주세요.
+						현재 받아온 항목이 없습니다. RSS 응답 실패 또는 빌드 캐시 문제일 수 있습니다.
 					</p>
 				) : (
 					groupedEntries.map(({ cat, items }) => (
 						<section class="cat-block">
 							<h2>
-								<span>{cat.emoji}</span> {cat.label}{' '}
+								<span aria-hidden="true">{cat.emoji}</span> {cat.label}{' '}
 								<span class="count">{items.length}건</span>
 							</h2>
 							<ul class="items">
@@ -177,12 +69,133 @@ const fetchedAt = new Date();
 				)
 			}
 
-			<div class="disclaimer">
-				<strong>이 페이지에 대해</strong> · 정부 보도자료 원문 링크를 인포모아 7대축으로 자동 분류해서 보여드립니다.
-				원문 클릭 시 정책브리핑(korea.kr) 페이지로 이동합니다. 인포모아는 보도자료 본문을 저장·재배포하지 않으며,
-				제목·부처·게재일·요약 일부만 인용합니다 (KOGL 제1유형 — 출처표시 후 자유 이용).
-			</div>
+			<aside class="callout callout-disclaimer">
+				<p class="callout-title">📌 이 페이지에 대해</p>
+				<p>
+					정부 보도자료 원문 링크를 인포모아 7대축으로 자동 분류합니다. 원문 클릭 시 정책브리핑
+					(korea.kr) 페이지로 이동합니다. 인포모아는 보도자료 본문을 저장·재배포하지 않으며,
+					제목·부처·게재일·요약 일부만 인용합니다 (KOGL 제1유형 — 출처표시 후 자유 이용).
+				</p>
+			</aside>
 		</main>
 		<Footer />
+
+		<style>
+			main {
+				padding: var(--space-6) var(--space-4) var(--space-8);
+				max-width: var(--container-lg);
+			}
+			.feed-header {
+				text-align: center;
+				padding: var(--space-5) 0 var(--space-7);
+				border-bottom: 1px solid var(--border-default);
+				margin-bottom: var(--space-7);
+			}
+			.eyebrow {
+				font-size: var(--text-sm);
+				color: var(--text-link);
+				font-weight: var(--weight-semibold);
+				letter-spacing: var(--tracking-wide);
+				margin: 0 0 var(--space-2);
+			}
+			.feed-header h1 {
+				margin: 0 0 var(--space-2);
+				font-size: var(--text-4xl);
+			}
+			@media (max-width: 768px) {
+				.feed-header h1 {
+					font-size: var(--text-3xl);
+				}
+			}
+			.lead {
+				color: var(--text-body);
+				margin: 0 auto var(--space-3);
+				max-width: 560px;
+			}
+			.meta {
+				color: var(--text-meta);
+				font-size: var(--text-sm);
+				margin: 0;
+			}
+			.cat-block {
+				margin: 0 0 var(--space-7);
+			}
+			.cat-block h2 {
+				display: flex;
+				align-items: baseline;
+				gap: var(--space-2);
+				font-size: var(--text-xl);
+				margin: 0 0 var(--space-3);
+				padding-bottom: var(--space-2);
+				border-bottom: 2px solid var(--color-primary-100);
+			}
+			.cat-block .count {
+				font-size: var(--text-sm);
+				color: var(--text-meta);
+				font-weight: var(--weight-regular);
+			}
+			.items {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				flex-direction: column;
+				gap: var(--space-3);
+			}
+			.items a {
+				display: block;
+				padding: var(--space-4) var(--space-5);
+				background: var(--bg-card);
+				border: 1px solid var(--border-default);
+				border-radius: var(--radius-md);
+				text-decoration: none;
+				color: inherit;
+				transition: all var(--duration-fast) var(--ease-out);
+			}
+			.items a:hover {
+				border-color: var(--color-primary-300);
+				box-shadow: var(--shadow-sm);
+				text-decoration: none;
+			}
+			.items h3 {
+				margin: 0 0 var(--space-2);
+				font-size: var(--text-base);
+				font-weight: var(--weight-semibold);
+				line-height: var(--leading-snug);
+				color: var(--text-heading);
+			}
+			.item-meta {
+				display: flex;
+				gap: var(--space-3);
+				font-size: var(--text-xs);
+				color: var(--text-meta);
+				margin: 0 0 var(--space-2);
+				align-items: center;
+				flex-wrap: wrap;
+			}
+			.ministry {
+				display: inline-block;
+				padding: 0.1em 0.6em;
+				background: var(--color-primary-50);
+				border-radius: var(--radius-full);
+				color: var(--color-primary-700);
+				font-weight: var(--weight-semibold);
+			}
+			.summary {
+				margin: 0;
+				font-size: var(--text-sm);
+				color: var(--text-meta);
+				line-height: var(--leading-normal);
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+			}
+			.empty {
+				text-align: center;
+				color: var(--text-meta);
+				padding: var(--space-7) 0;
+			}
+		</style>
 	</body>
 </html>

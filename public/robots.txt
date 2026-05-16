@@ -1,0 +1,24 @@
+# 인포모아 robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /draft/
+Disallow: /admin/
+Disallow: /*?*
+
+# AI 크롤러 (현 정책: 학습 허용)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Common Crawl 차단
+User-agent: CCBot
+Disallow: /
+
+Sitemap: https://infomoa.kr/sitemap-index.xml
+Sitemap: https://infomoa.kr/rss.xml

@@ -17,83 +17,40 @@ const { category } = Astro.props;
 const posts = (await getCollection('blog'))
 	.filter((p) => p.data.category === category.slug)
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const latest = posts[0]?.data.pubDate;
 ---
 
 <!doctype html>
 <html lang="ko">
 	<head>
-		<BaseHead
-			title={`${category.label} · ${SITE_TITLE}`}
-			description={category.description}
-		/>
-		<style>
-			main {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: 0 auto;
-				padding: 2em 1em 4em;
-			}
-			.cat-header {
-				text-align: center;
-				padding: 1em 0 2em;
-			}
-			.cat-emoji {
-				font-size: 3rem;
-				display: block;
-				margin-bottom: 0.2em;
-			}
-			.cat-label {
-				margin: 0 0 0.3em;
-				font-size: 2rem;
-			}
-			.cat-desc {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			.post-list {
-				list-style: none;
-				padding: 0;
-				margin: 0;
-				display: flex;
-				flex-direction: column;
-				gap: 0.8em;
-			}
-			.post-list a {
-				display: block;
-				padding: 1em 1.2em;
-				border-radius: 10px;
-				background: white;
-				border: 1px solid rgba(var(--gray-light), 1);
-				text-decoration: none;
-				color: rgb(var(--black));
-				transition: border-color 0.15s ease;
-			}
-			.post-list a:hover {
-				border-color: rgba(var(--accent), 0.6);
-			}
-			.post-title {
-				margin: 0 0 0.3em;
-				font-size: 1.1rem;
-			}
-			.post-meta {
-				margin: 0;
-				font-size: 0.85rem;
-				color: rgb(var(--gray));
-			}
-			.empty {
-				text-align: center;
-				color: rgb(var(--gray));
-				padding: 2em 0;
-			}
-		</style>
+		<BaseHead title={`${category.label} · ${SITE_TITLE}`} description={category.description} />
 	</head>
 	<body>
 		<Header />
-		<main>
+		<main id="main" class="container">
+			<nav class="crumbs" aria-label="이동 경로">
+				<a href="/">홈</a>
+				<span aria-hidden="true">›</span>
+				<a href="/blog">블로그</a>
+				<span aria-hidden="true">›</span>
+				<span aria-current="page">{category.label}</span>
+			</nav>
+
 			<section class="cat-header">
-				<span class="cat-emoji">{category.emoji}</span>
+				<span class="cat-emoji" aria-hidden="true">{category.emoji}</span>
 				<h1 class="cat-label">{category.label}</h1>
 				<p class="cat-desc">{category.description}</p>
+				<p class="cat-stats">
+					<span>총 {posts.length}편</span>
+					{
+						latest && (
+							<>
+								<span aria-hidden="true">·</span>
+								<span>최근 업데이트 <FormattedDate date={latest} /></span>
+							</>
+						)
+					}
+				</p>
 			</section>
 
 			{
@@ -105,6 +62,9 @@ const posts = (await getCollection('blog'))
 							<li>
 								<a href={`/blog/${post.id}/`}>
 									<h2 class="post-title">{post.data.title}</h2>
+									{post.data.description && (
+										<p class="post-desc">{post.data.description}</p>
+									)}
 									<p class="post-meta">
 										<FormattedDate date={post.data.pubDate} />
 									</p>
@@ -116,5 +76,109 @@ const posts = (await getCollection('blog'))
 			}
 		</main>
 		<Footer />
+
+		<style>
+			main {
+				padding: var(--space-6) var(--space-4) var(--space-8);
+				max-width: var(--container-lg);
+			}
+			.crumbs {
+				display: flex;
+				gap: var(--space-2);
+				font-size: var(--text-sm);
+				color: var(--text-meta);
+				margin-bottom: var(--space-5);
+			}
+			.crumbs a {
+				color: var(--text-meta);
+				text-decoration: none;
+			}
+			.crumbs a:hover {
+				color: var(--text-link);
+			}
+			.cat-header {
+				text-align: center;
+				padding: var(--space-5) 0 var(--space-7);
+			}
+			.cat-emoji {
+				font-size: 3.5rem;
+				display: block;
+				margin-bottom: var(--space-3);
+				line-height: 1;
+			}
+			.cat-label {
+				margin: 0 0 var(--space-2);
+				font-size: var(--text-4xl);
+				font-weight: var(--weight-extrabold);
+				letter-spacing: var(--tracking-tight);
+			}
+			@media (max-width: 768px) {
+				.cat-label {
+					font-size: var(--text-3xl);
+				}
+			}
+			.cat-desc {
+				margin: 0 auto var(--space-3);
+				color: var(--text-body);
+				max-width: 560px;
+			}
+			.cat-stats {
+				display: flex;
+				justify-content: center;
+				gap: var(--space-2);
+				color: var(--text-meta);
+				font-size: var(--text-sm);
+				margin: 0;
+			}
+			.post-list {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				display: grid;
+				grid-template-columns: 1fr;
+				gap: var(--space-3);
+				max-width: var(--content-prose);
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.post-list a {
+				display: block;
+				padding: var(--space-4) var(--space-5);
+				background: var(--bg-card);
+				border: 1px solid var(--border-default);
+				border-radius: var(--radius-lg);
+				text-decoration: none;
+				color: inherit;
+				transition: all var(--duration-base) var(--ease-out);
+			}
+			.post-list a:hover {
+				border-color: var(--color-primary-300);
+				box-shadow: var(--shadow-md);
+				text-decoration: none;
+			}
+			.post-title {
+				margin: 0 0 var(--space-2);
+				font-size: var(--text-xl);
+				font-weight: var(--weight-semibold);
+				color: var(--text-heading);
+				line-height: var(--leading-snug);
+			}
+			.post-desc {
+				margin: 0 0 var(--space-2);
+				color: var(--text-meta);
+				font-size: var(--text-sm);
+				line-height: var(--leading-normal);
+			}
+			.post-meta {
+				margin: 0;
+				font-size: var(--text-xs);
+				color: var(--text-meta);
+			}
+			.empty {
+				text-align: center;
+				color: var(--text-meta);
+				padding: var(--space-7) 0;
+			}
+		</style>
 	</body>
 </html>

@@ -1,54 +1,134 @@
 ---
-import { SITE_TITLE } from '../consts';
-const today = new Date();
+import { CATEGORIES, SITE_TITLE } from '../consts';
+const year = new Date().getFullYear();
+const cats = CATEGORIES;
+const left = cats.slice(0, 4);
+const right = cats.slice(4);
 ---
 
-<footer>
-	<div class="footer-inner">
-		<p class="copyright">&copy; {today.getFullYear()} {SITE_TITLE}</p>
-		<p class="disclaimer">
-			이 사이트의 모든 글은 일반 정보 제공입니다. 본인 케이스 결정은 본인 책임이며,
-			필요 시 세무사·법무사·은행·중개사 등 자격 있는 전문가와 확인하세요.
-		</p>
-		<div class="links">
-			<a href="/about">소개</a>
-			<span aria-hidden="true">·</span>
-			<a href="/rss.xml">RSS</a>
+<footer class="site-footer" role="contentinfo">
+	<div class="container footer-grid">
+		<div class="footer-brand">
+			<p class="brand-name">📚 {SITE_TITLE}</p>
+			<p class="brand-desc">
+				한국 생활정보 종합 블로그. 부동산·세금·금융·정부지원금·창업·계산기·뉴스를 한 곳에서.
+			</p>
+			<p class="brand-meta">운영: 부동산 분양영업 현직자</p>
 		</div>
+
+		<nav class="footer-nav" aria-label="콘텐츠">
+			<p class="nav-title">콘텐츠</p>
+			<a href="/blog">전체 글</a>
+			<a href="/policy-feed">정책 피드</a>
+			{left.map((c) => <a href={`/category/${c.slug}/`}>{`${c.emoji} ${c.label}`}</a>)}
+		</nav>
+
+		<nav class="footer-nav" aria-label="카테고리">
+			<p class="nav-title">카테고리</p>
+			{right.map((c) => <a href={`/category/${c.slug}/`}>{`${c.emoji} ${c.label}`}</a>)}
+		</nav>
+
+		<nav class="footer-nav" aria-label="구독·소개">
+			<p class="nav-title">구독·소개</p>
+			<a href="/rss.xml">RSS 피드</a>
+			<a href="/about">소개</a>
+		</nav>
+	</div>
+
+	<div class="container footer-bottom">
+		<div class="legal">
+			<p>© {year} {SITE_TITLE}. 모든 권리 보유.</p>
+		</div>
+		<p class="disclaimer">
+			본 사이트의 모든 글은 일반 정보 제공이며 법적·세무·금융 자문이 아닙니다. 개별 사안은 반드시
+			자격 있는 전문가와 상담하세요.
+		</p>
 	</div>
 </footer>
+
 <style>
-	footer {
-		padding: 2em 1em 3em 1em;
-		background: linear-gradient(var(--gray-gradient)) no-repeat;
-		color: rgb(var(--gray));
-		text-align: center;
+	.site-footer {
+		background: var(--color-gray-900);
+		color: var(--color-gray-300);
+		margin-top: var(--space-9);
+		padding: var(--space-8) 0 var(--space-5);
 	}
-	.footer-inner {
-		max-width: 720px;
-		margin: 0 auto;
+	.footer-grid {
+		display: grid;
+		grid-template-columns: 1.6fr 1fr 1fr 1fr;
+		gap: var(--space-6);
+		padding-bottom: var(--space-6);
+		border-bottom: 1px solid var(--color-gray-800);
 	}
-	.copyright {
-		margin: 0 0 0.6em;
-		font-weight: 600;
-		color: rgb(var(--gray-dark));
+	@media (max-width: 960px) {
+		.footer-grid {
+			grid-template-columns: 1fr 1fr;
+		}
 	}
-	.disclaimer {
-		margin: 0 0 1em;
-		font-size: 0.88rem;
-		line-height: 1.55;
+	@media (max-width: 480px) {
+		.footer-grid {
+			grid-template-columns: 1fr;
+		}
 	}
-	.links {
+	.brand-name {
+		color: white;
+		font-size: var(--text-xl);
+		font-weight: var(--weight-bold);
+		margin: 0 0 var(--space-2);
+	}
+	.brand-desc {
+		color: var(--color-gray-400);
+		font-size: var(--text-sm);
+		line-height: var(--leading-relaxed);
+		margin: 0 0 var(--space-3);
+	}
+	.brand-meta {
+		color: var(--color-gray-500);
+		font-size: var(--text-xs);
+		margin: 0;
+	}
+	.footer-nav {
 		display: flex;
-		justify-content: center;
-		gap: 0.6em;
-		font-size: 0.9rem;
+		flex-direction: column;
+		gap: var(--space-2);
 	}
-	.links a {
-		color: rgb(var(--gray-dark));
+	.nav-title {
+		color: white;
+		font-weight: var(--weight-semibold);
+		margin: 0 0 var(--space-2);
+		font-size: var(--text-base);
+	}
+	.footer-nav a {
+		color: var(--color-gray-400);
+		text-decoration: none;
+		font-size: var(--text-sm);
+		min-height: 32px;
+		display: inline-flex;
+		align-items: center;
+	}
+	.footer-nav a:hover {
+		color: var(--color-accent-200);
 		text-decoration: none;
 	}
-	.links a:hover {
-		text-decoration: underline;
+	.footer-bottom {
+		padding-top: var(--space-5);
+	}
+	.legal {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: var(--space-3);
+		font-size: var(--text-sm);
+	}
+	.legal p {
+		margin: 0;
+	}
+	.disclaimer {
+		margin: var(--space-4) 0 0;
+		padding-top: var(--space-4);
+		border-top: 1px dashed var(--color-gray-800);
+		color: var(--color-gray-500);
+		font-size: var(--text-xs);
+		line-height: var(--leading-relaxed);
 	}
 </style>
