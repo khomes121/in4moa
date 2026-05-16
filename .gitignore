@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# 운영 임시 폴더 (사용자의 삭제예정 패턴)
+삭제예정/

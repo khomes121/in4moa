@@ -2,47 +2,160 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import FormattedDate from '../components/FormattedDate.astro';
+import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const allPosts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const recentPosts = allPosts.slice(0, 6);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				width: 960px;
+				max-width: calc(100% - 2em);
+				margin: 0 auto;
+				padding: 2em 1em;
+			}
+			.hero {
+				text-align: center;
+				padding: 2em 0 3em;
+			}
+			.hero h1 {
+				margin: 0 0 0.4em;
+				font-size: 2.6rem;
+				line-height: 1.2;
+			}
+			.hero p {
+				margin: 0;
+				color: rgb(var(--gray));
+				font-size: 1.15rem;
+			}
+			.section-title {
+				margin: 2em 0 1em;
+				font-size: 1.5rem;
+				border-bottom: 2px solid rgba(var(--accent), 0.4);
+				padding-bottom: 0.3em;
+			}
+			.category-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+				gap: 1em;
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			.category-card {
+				display: block;
+				padding: 1.2em;
+				border-radius: 12px;
+				background: rgba(var(--gray-light), 0.7);
+				text-decoration: none;
+				color: rgb(var(--black));
+				transition: transform 0.15s ease, box-shadow 0.15s ease;
+			}
+			.category-card:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--box-shadow);
+			}
+			.category-emoji {
+				font-size: 2rem;
+				display: block;
+				margin-bottom: 0.3em;
+			}
+			.category-label {
+				font-weight: 700;
+				font-size: 1.15rem;
+				margin: 0 0 0.3em;
+			}
+			.category-desc {
+				margin: 0;
+				font-size: 0.92rem;
+				color: rgb(var(--gray));
+			}
+			.recent-list {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+				gap: 1em;
+			}
+			.recent-list a {
+				display: block;
+				padding: 1em;
+				border-radius: 10px;
+				background: white;
+				border: 1px solid rgba(var(--gray-light), 1);
+				text-decoration: none;
+				color: rgb(var(--black));
+				transition: border-color 0.15s ease;
+			}
+			.recent-list a:hover {
+				border-color: rgba(var(--accent), 0.6);
+			}
+			.recent-title {
+				margin: 0 0 0.4em;
+				font-size: 1.05rem;
+				line-height: 1.35;
+			}
+			.recent-meta {
+				display: flex;
+				gap: 0.6em;
+				font-size: 0.85rem;
+				color: rgb(var(--gray));
+				margin: 0;
+			}
+		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
+			<section class="hero">
+				<h1>인포모아</h1>
+				<p>부동산·세금·대출·정부지원금·창업까지 — 실생활에 바로 쓰는 정보 모음</p>
+			</section>
+
+			<h2 class="section-title">카테고리</h2>
+			<ul class="category-grid">
+				{
+					CATEGORIES.map((c) => (
+						<li>
+							<a class="category-card" href={`/category/${c.slug}/`}>
+								<span class="category-emoji">{c.emoji}</span>
+								<h3 class="category-label">{c.label}</h3>
+								<p class="category-desc">{c.description}</p>
+							</a>
+						</li>
+					))
+				}
 			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+
+			<h2 class="section-title">최근 글</h2>
+			<ul class="recent-list">
+				{
+					recentPosts.map((post) => {
+						const cat = CATEGORIES.find((c) => c.slug === post.data.category);
+						return (
+							<li>
+								<a href={`/blog/${post.id}/`}>
+									<p class="recent-meta">
+										<span>{cat ? `${cat.emoji} ${cat.label}` : post.data.category}</span>
+										<FormattedDate date={post.data.pubDate} />
+									</p>
+									<h3 class="recent-title">{post.data.title}</h3>
+								</a>
+							</li>
+						);
+					})
+				}
+			</ul>
 		</main>
 		<Footer />
 	</body>

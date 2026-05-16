@@ -1,0 +1,120 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+import { CATEGORIES, SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+	return CATEGORIES.map((c) => ({
+		params: { name: c.slug },
+		props: { category: c },
+	}));
+}
+
+const { category } = Astro.props;
+const posts = (await getCollection('blog'))
+	.filter((p) => p.data.category === category.slug)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead
+			title={`${category.label} · ${SITE_TITLE}`}
+			description={category.description}
+		/>
+		<style>
+			main {
+				width: 720px;
+				max-width: calc(100% - 2em);
+				margin: 0 auto;
+				padding: 2em 1em 4em;
+			}
+			.cat-header {
+				text-align: center;
+				padding: 1em 0 2em;
+			}
+			.cat-emoji {
+				font-size: 3rem;
+				display: block;
+				margin-bottom: 0.2em;
+			}
+			.cat-label {
+				margin: 0 0 0.3em;
+				font-size: 2rem;
+			}
+			.cat-desc {
+				margin: 0;
+				color: rgb(var(--gray));
+			}
+			.post-list {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				display: flex;
+				flex-direction: column;
+				gap: 0.8em;
+			}
+			.post-list a {
+				display: block;
+				padding: 1em 1.2em;
+				border-radius: 10px;
+				background: white;
+				border: 1px solid rgba(var(--gray-light), 1);
+				text-decoration: none;
+				color: rgb(var(--black));
+				transition: border-color 0.15s ease;
+			}
+			.post-list a:hover {
+				border-color: rgba(var(--accent), 0.6);
+			}
+			.post-title {
+				margin: 0 0 0.3em;
+				font-size: 1.1rem;
+			}
+			.post-meta {
+				margin: 0;
+				font-size: 0.85rem;
+				color: rgb(var(--gray));
+			}
+			.empty {
+				text-align: center;
+				color: rgb(var(--gray));
+				padding: 2em 0;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="cat-header">
+				<span class="cat-emoji">{category.emoji}</span>
+				<h1 class="cat-label">{category.label}</h1>
+				<p class="cat-desc">{category.description}</p>
+			</section>
+
+			{
+				posts.length === 0 ? (
+					<p class="empty">아직 글이 없습니다. 곧 채워집니다.</p>
+				) : (
+					<ul class="post-list">
+						{posts.map((post) => (
+							<li>
+								<a href={`/blog/${post.id}/`}>
+									<h2 class="post-title">{post.data.title}</h2>
+									<p class="post-meta">
+										<FormattedDate date={post.data.pubDate} />
+									</p>
+								</a>
+							</li>
+						))}
+					</ul>
+				)
+			}
+		</main>
+		<Footer />
+	</body>
+</html>
