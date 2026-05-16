@@ -1,77 +1,108 @@
-# Astro Starter Kit: Blog
+# 인포모아 (in4moa.store)
 
-```sh
-npm create astro@latest -- --template blog
+> 부동산·세금·대출·정부지원금·창업·계산기·뉴스 — 한국 생활정보 종합 블로그.
+> Astro + Cloudflare Pages 정적 사이트.
+
+## 기술 스택
+
+- **Astro 6.3.3** (정적 사이트 생성)
+- **TypeScript strict**
+- **Pretendard Variable** (한국어 폰트, CDN dynamic-subset)
+- **Cloudflare Pages** (호스팅·자동 배포)
+- **fast-xml-parser** (정책브리핑 RSS 파싱)
+- `@astrojs/mdx`, `@astrojs/rss`, `@astrojs/sitemap`, `sharp`
+
+## 7대 카테고리
+
+| 슬러그 | 라벨 | 다루는 영역 |
+|---|---|---|
+| `realestate` | 🏠 부동산 | 청약·분양·매매·전월세·실거래 |
+| `tax` | 🧾 세금 | 양도세·취득세·종부세·증여세 |
+| `loan` | 💳 대출·금융 | 디딤돌·보금자리·생활자금 |
+| `subsidy` | 🎁 정부지원금 | 청년·신혼·소상공인·복지 |
+| `business` | 🚀 창업·자영업 | 인허가·세무·임대차 |
+| `calculator` | 🧮 계산기 | LTV·DTI·취득세·중개수수료·청약가점·임대수익률 |
+| `news` | 📰 뉴스·정책 | 시의성 있는 정책·시장 동향 |
+
+카테고리 메타데이터: `src/consts.ts` (`CATEGORIES`)
+
+## 로컬 개발
+
+```bash
+npm install
+npm run dev      # http://localhost:4331
+npm run build    # dist/
+npm run preview  # 빌드 결과 미리보기
 ```
 
-<!-- ASTRO:REMOVE:START -->
+dev 포트는 **4331** (분양노트 4321과 충돌 회피).
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/blog)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/blog)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/blog/devcontainer.json)
+## 콘텐츠 작성
 
-<!-- ASTRO:REMOVE:END -->
+`src/content/blog/<slug>.md` 또는 `.mdx`. Frontmatter 필수 필드:
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-<!-- ASTRO:REMOVE:START -->
-
-![blog](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
-
-<!-- ASTRO:REMOVE:END -->
-
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+```yaml
+---
+title: '글 제목'
+description: '메타·OG·검색에 노출되는 한 줄 요약'
+pubDate: 2026-05-17
+updatedDate: 2026-05-20    # 옵션
+category: realestate        # 7대 슬러그 중 하나 (enum 강제)
+tags: [양도세, 비과세]      # 옵션
+heroImage: ./hero.jpg       # 옵션
+---
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+스키마: `src/content.config.ts`
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## 운영 원칙
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+1. **출처와 기준일 명시** — 모든 글은 공식 자료(법령·정부 보도자료·API)와 작성·확인 시점을 표시.
+2. **AI 단독 생성 X** — 외부 API/RSS 원문 fetch → 짧은 인용 + 자체 해석 + 행동 체크리스트 가공.
+3. **본문 전재 금지** — 언론사·정부 본문 그대로 복붙 X. KOGL 1유형(공공) 외엔 제목·요약·링크만.
+4. **시의성 글 분리** — 자주 바뀌는 정책·금리·한도는 `category: news`에 두고 유효기간 명시.
+5. **계산기 입력은 본인 브라우저에서만** — 인포모아 서버는 정적이므로 받을 곳이 없음.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## 사이트 구조
 
-## 🧞 Commands
+```
+/                       카테고리 카드 + 최근 글
+/blog                   전체 글 목록
+/blog/[slug]            글 상세
+/category/[slug]        카테고리별 글 목록 (7개)
+/policy-feed            정책브리핑 RSS 자동 분류 (빌드 시 fetch)
+/about                  소개·운영 원칙·면책
+/rss.xml                전체 RSS
+/sitemap-index.xml      사이트맵
+/robots.txt             크롤러 정책
+```
 
-All commands are run from the root of the project, from a terminal:
+## 배포 (Cloudflare Pages)
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+`main` 브랜치 push 시 자동 배포.
 
-## 👀 Want to learn more?
+- **빌드 명령**: `npm run build`
+- **출력 디렉토리**: `dist`
+- **Node 버전**: 22.12.0+
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+커스텀 도메인: `in4moa.store`
 
-## Credit
+## SEO
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+- `<html lang="ko">`, `og:locale ko_KR`
+- JSON-LD: Organization + WebSite (공통) + BlogPosting (글)
+- 자동 sitemap (우선순위 차등: 홈 1.0 / 카테고리 0.8 / 글 0.7)
+- robots.txt: GPTBot/ClaudeBot 허용, CCBot 차단
+- Pretendard `font-display: swap` + preconnect
+
+## 라이선스
+
+콘텐츠 = 본인 운영 한정. 코드 = 비공개.
+공공 데이터(KOGL) 인용 시 출처 박스로 명시.
+
+---
+
+**관련 자산**:
+- 디자인 권고서: `C:\_클로드\수익형블로그_연구\인포모아_디자인_권고서.md`
+- 알파남 모델 매트릭스: 같은 폴더 `알파남_블로그_수익화_적용매트릭스.md`
+- 콘텐츠 API 카탈로그: `C:\_클로드\_지식자산\API_데이터소스\`
