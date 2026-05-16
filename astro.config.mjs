@@ -6,7 +6,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://infomoa.kr',
+	site: 'https://in4moa.store',
 	server: { port: 4331 },
 	devToolbar: { enabled: false },
 	integrations: [
@@ -21,7 +21,7 @@ export default defineConfig({
 			},
 			serialize(item) {
 				const url = item.url;
-				if (/^https:\/\/infomoa\.kr\/?$/.test(url)) {
+				if (/^https:\/\/in4moa\.store\/?$/.test(url)) {
 					return { ...item, priority: 1.0, changefreq: 'daily' };
 				}
 				if (/\/category\//.test(url)) {

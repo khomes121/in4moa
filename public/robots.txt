@@ -20,5 +20,5 @@ Allow: /
 User-agent: CCBot
 Disallow: /
 
-Sitemap: https://infomoa.kr/sitemap-index.xml
-Sitemap: https://infomoa.kr/rss.xml
+Sitemap: https://in4moa.store/sitemap-index.xml
+Sitemap: https://in4moa.store/rss.xml
