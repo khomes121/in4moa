@@ -2,6 +2,7 @@
 
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import pagefind from 'astro-pagefind';
 import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
@@ -11,6 +12,7 @@ export default defineConfig({
 	devToolbar: { enabled: false },
 	integrations: [
 		mdx(),
+		pagefind(),
 		sitemap({
 			changefreq: 'weekly',
 			priority: 0.7,

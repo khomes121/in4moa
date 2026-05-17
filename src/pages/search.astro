@@ -1,0 +1,127 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={`검색 — ${SITE_TITLE}`} description="인포모아 글 검색 — 부동산·세금·대출·정부지원금·창업·계산기·뉴스 모든 글을 한 번에 찾기" />
+		<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+	</head>
+	<body>
+		<Header />
+		<main id="main" class="search-page">
+			<div class="container">
+				<header class="search-hero">
+					<h1>검색</h1>
+					<p class="search-desc">키워드로 인포모아 글을 찾아보세요. 제목·본문·태그 전부 검색됩니다.</p>
+				</header>
+
+				<div id="search" class="search-container"></div>
+
+				<aside class="search-hint">
+					<p><strong>검색 팁</strong></p>
+					<ul>
+						<li>두 단어 이상 입력 시 모두 포함된 결과 (예: <code>양도세 비과세</code>)</li>
+						<li>큰따옴표로 묶으면 정확히 일치 (예: <code>"일시적 2주택"</code>)</li>
+						<li>마이너스로 제외 (예: <code>대출 -주택담보</code>)</li>
+					</ul>
+				</aside>
+			</div>
+		</main>
+		<Footer />
+
+		<script src="/pagefind/pagefind-ui.js" is:inline></script>
+		<script is:inline>
+			window.addEventListener('DOMContentLoaded', () => {
+				if (typeof PagefindUI === 'undefined') return;
+				new PagefindUI({
+					element: '#search',
+					showImages: false,
+					showSubResults: true,
+					excerptLength: 30,
+					resetStyles: false,
+					translations: {
+						placeholder: '검색어를 입력하세요',
+						clear_search: '지우기',
+						load_more: '더 보기',
+						search_label: '인포모아 검색',
+						filters_label: '필터',
+						zero_results: '"[SEARCH_TERM]" 검색 결과가 없습니다',
+						many_results: '"[SEARCH_TERM]" 검색 결과 [COUNT]건',
+						one_result: '"[SEARCH_TERM]" 검색 결과 1건',
+						alt_search: '"[SEARCH_TERM]" 결과 없음 — 대신 [DIFFERENT_TERM]에 대한 결과:',
+						search_suggestion: '"[SEARCH_TERM]" 결과 없음. 다음을 시도해보세요:',
+						searching: '"[SEARCH_TERM]" 검색 중...',
+					},
+				});
+			});
+		</script>
+
+		<style>
+			.search-page {
+				padding: var(--space-6) 0 var(--space-8);
+				min-height: 60vh;
+			}
+			.search-hero {
+				margin-bottom: var(--space-6);
+				text-align: center;
+			}
+			.search-hero h1 {
+				font-size: var(--text-3xl);
+				margin: 0 0 var(--space-2);
+			}
+			.search-desc {
+				color: var(--text-meta);
+				font-size: var(--text-md);
+				margin: 0;
+			}
+			.search-container {
+				max-width: 720px;
+				margin: 0 auto var(--space-6);
+			}
+			.search-hint {
+				max-width: 720px;
+				margin: var(--space-6) auto 0;
+				padding: var(--space-4);
+				background: var(--bg-subtle);
+				border-radius: var(--radius-md);
+				font-size: var(--text-sm);
+				color: var(--text-meta);
+			}
+			.search-hint p {
+				margin: 0 0 var(--space-2);
+			}
+			.search-hint ul {
+				margin: 0;
+				padding-left: var(--space-5);
+			}
+			.search-hint code {
+				background: var(--bg-page);
+				padding: 2px 6px;
+				border-radius: var(--radius-sm);
+				font-size: 0.9em;
+				color: var(--text-body);
+			}
+
+			/* Pagefind UI 톤 맞춤 */
+			:global(.pagefind-ui) {
+				--pagefind-ui-primary: var(--color-primary-700, #0050a0);
+				--pagefind-ui-text: var(--text-body);
+				--pagefind-ui-background: var(--bg-card);
+				--pagefind-ui-border: var(--border-default);
+				--pagefind-ui-tag: var(--bg-subtle);
+				--pagefind-ui-border-width: 1px;
+				--pagefind-ui-border-radius: 8px;
+				--pagefind-ui-font: inherit;
+			}
+			:global(.pagefind-ui__search-input) {
+				font-size: 1rem;
+				min-height: 48px;
+			}
+		</style>
+	</body>
+</html>
