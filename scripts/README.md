@@ -26,6 +26,52 @@
 
 ---
 
+## 로그·모니터링
+
+자동화 실행 결과는 모두 `logs/` 폴더에 자동 기록됩니다. (git 무시 — 로컬만)
+
+```
+logs/
+├── _status.json                          # 마지막 실행 상태 (성공·실패·편수)
+├── latest.log                            # 가장 최근 실행 전체 로그
+├── error.log                             # 모든 에러 누적 (영구)
+└── 2026-05-18T19-00-00.log               # 날짜별 (30일 자동 회전)
+```
+
+### 실시간 로그 보기 — `monitor.bat`
+더블클릭 → PowerShell `tail -f` 모드로 `latest.log` 실시간 표시. 작업 스케줄러가 실행 중일 때 진행 보기.
+
+### 마지막 상태 빠르게 — `status.bat`
+더블클릭 → `_status.json` + 최근 에러 20줄 + latest.log 메타 표시.
+
+### `_status.json` 구조 (예시)
+```json
+{
+  "last_run": "2026-05-18T19:00:15.234Z",
+  "last_run_kst": "2026-05-19 04:00:15",
+  "run_id": "2026-05-18T19-00-00",
+  "log_file": "logs/2026-05-18T19-00-00.log",
+  "phase": "completed",
+  "success": 5,
+  "total": 5,
+  "failed": 0,
+  "pushed": true,
+  "elapsed_sec": 287,
+  "posts": [
+    { "slug": "auto-realestate-2026-05-19-1", "cat": "realestate", "title": "..." },
+    ...
+  ],
+  "failures": []
+}
+```
+
+phase 값:
+- `started`: 시작했지만 미완료 (= 실행 중 또는 비정상 종료)
+- `no-new-items`: 새 자료 없어 스킵
+- `completed`: 정상 완료 (success·failed로 결과 판단)
+
+---
+
 ## 로컬 자동화 셋업 (1차 방식)
 
 ### 1단계 — 수동 시험

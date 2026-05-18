@@ -20,7 +20,7 @@
 //   (또는 run-daily.bat 더블클릭 / 작업 스케줄러)
 
 import { spawn, execSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, createWriteStream, readdirSync, unlinkSync, statSync, appendFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -28,6 +28,63 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const BLOG = join(ROOT, 'src', 'content', 'blog');
 const PUBLISHED = join(__dirname, 'published-links.json');
+const LOGS = join(ROOT, 'logs');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 로그 시스템 — 콘솔 + 날짜별 로그 + latest.log + error.log + _status.json
+mkdirSync(LOGS, { recursive: true });
+const RUN_ID = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+const LOG_FILE = join(LOGS, `${RUN_ID}.log`);
+const LATEST_LOG = join(LOGS, 'latest.log');
+const ERROR_LOG = join(LOGS, 'error.log');
+const STATUS_FILE = join(LOGS, '_status.json');
+
+const logStream = createWriteStream(LOG_FILE, { flags: 'a' });
+const latestStream = createWriteStream(LATEST_LOG, { flags: 'w' });
+
+const _log = console.log;
+const _err = console.error;
+console.log = (...args) => {
+  const line = args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ');
+  _log(line);
+  logStream.write(line + '\n');
+  latestStream.write(line + '\n');
+};
+console.error = (...args) => {
+  const line = args.map(a => typeof a === 'string' ? a : JSON.stringify(a)).join(' ');
+  _err(line);
+  const tagged = '[ERROR] ' + line;
+  logStream.write(tagged + '\n');
+  latestStream.write(tagged + '\n');
+  appendFileSync(ERROR_LOG, `[${RUN_ID}] ${line}\n`);
+};
+
+function saveStatus(extra = {}) {
+  const status = {
+    last_run: new Date().toISOString(),
+    last_run_kst: new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 19).replace('T', ' '),
+    run_id: RUN_ID,
+    log_file: `logs/${RUN_ID}.log`,
+    ...extra,
+  };
+  writeFileSync(STATUS_FILE, JSON.stringify(status, null, 2) + '\n', 'utf-8');
+}
+
+// 30일 이상 된 날짜 로그 자동 삭제 (latest·error 제외)
+function rotateLogs() {
+  const now = Date.now();
+  const RETAIN_DAYS = 30;
+  for (const f of readdirSync(LOGS)) {
+    if (!f.endsWith('.log')) continue;
+    if (f === 'latest.log' || f === 'error.log') continue;
+    const fp = join(LOGS, f);
+    try {
+      const age = (now - statSync(fp).mtimeMs) / (24 * 3600 * 1000);
+      if (age > RETAIN_DAYS) unlinkSync(fp);
+    } catch {}
+  }
+}
+rotateLogs();
 
 // ─────────────────────────────────────────────────────────────────────────────
 const REFERENCE = readFileSync(
@@ -260,7 +317,13 @@ function gitCommitAndPush(count, date) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log('━━━ 인포모아 일 5편 자동 발행 (로컬) ━━━\n');
+  const startTime = Date.now();
+  console.log('━━━ 인포모아 일 5편 자동 발행 (로컬) ━━━');
+  console.log(`시작: ${new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 19).replace('T', ' ')} KST`);
+  console.log(`Run ID: ${RUN_ID}`);
+  console.log('');
+
+  saveStatus({ phase: 'started', success: 0 });
 
   console.log('[1/7] RSS 14개 수집');
   const all = await fetchAllRSS();
@@ -273,6 +336,7 @@ async function main() {
 
   if (unpublished.length === 0) {
     console.log('     ✗ 새 자료 없음. 종료');
+    saveStatus({ phase: 'no-new-items', success: 0, total: 0, elapsed_sec: Math.round((Date.now() - startTime) / 1000) });
     process.exit(0);
   }
 
@@ -286,6 +350,8 @@ async function main() {
   console.log('[5/7] Claude Code CLI 호출');
   const today = new Date().toISOString().slice(0, 10);
   let success = 0;
+  const failures = [];
+  const results = [];
   for (let i = 0; i < picks.length; i++) {
     const pick = picks[i];
     try {
@@ -298,8 +364,10 @@ async function main() {
       console.log(`        ${titleMatch?.[1]?.slice(0, 60) || '?'}`);
       pick.items.forEach(x => published.add(x.link));
       success++;
+      results.push({ slug, cat: pick.cat, title: titleMatch?.[1] || '?' });
     } catch (e) {
       console.log(`     ✗ [${i + 1}] ${pick.cat} 실패: ${e.message.slice(0, 100)}`);
+      failures.push({ index: i + 1, cat: pick.cat, error: e.message.slice(0, 200) });
     }
   }
 
@@ -307,14 +375,25 @@ async function main() {
   savePublished(published);
 
   console.log('[7/7] git commit + push');
+  let pushed = false;
   if (success > 0) {
-    const pushed = gitCommitAndPush(success, today);
+    pushed = gitCommitAndPush(success, today);
     if (pushed) console.log(`     ✓ ${success}편 push 완료 → CF Workers 자동 빌드`);
   } else {
     console.log('     ✗ 생성된 글 0편. git 작업 스킵');
   }
 
-  console.log(`\n✓ 완료 ${success}/${picks.length}편`);
+  const elapsed = Math.round((Date.now() - startTime) / 1000);
+  console.log('');
+  console.log(`✓ 완료 ${success}/${picks.length}편 (${elapsed}초)`);
+
+  saveStatus({
+    phase: 'completed',
+    success, total: picks.length, failed: failures.length,
+    pushed, elapsed_sec: elapsed,
+    posts: results,
+    failures,
+  });
 }
 
 main().catch(e => {
