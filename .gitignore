@@ -6,6 +6,9 @@ dist/
 # dependencies
 node_modules/
 
+# automation logs (로컬 자동화 실행 기록)
+logs/
+
 # logs
 npm-debug.log*
 yarn-debug.log*
