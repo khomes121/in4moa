@@ -1,0 +1,44 @@
+name: 매일 5편 자동 발행 (정책 큐레이션)
+
+on:
+  schedule:
+    # UTC 19시 = KST 04시 (새벽). pubDate는 스크립트가 KST 07/11/14/18/21시로 분산
+    - cron: '0 19 * * *'
+  workflow_dispatch:   # 수동 트리거 (사용자가 GitHub Actions 탭에서 즉시 실행 가능)
+
+jobs:
+  generate-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # commit·push 권한
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Generate 5 policy posts (Anthropic SDK + Prompt Caching)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: claude-sonnet-4-6
+        run: node scripts/daily-policy.mjs
+
+      - name: Commit and push
+        run: |
+          git config user.email "bot@in4moa.store"
+          git config user.name "in4moa bot"
+          git add src/content/blog/ scripts/published-links.json
+          if git diff --cached --quiet; then
+            echo "::notice::생성된 글 없음 (새 자료 없거나 모두 기발행). 종료"
+            exit 0
+          fi
+          git commit -m "feat(auto): 일일 정책 자동 발행 ($(date -u +'%Y-%m-%d'))"
+          git push
+          echo "::notice::커밋·푸시 완료 → CF Workers Builds 자동 배포 시작"
