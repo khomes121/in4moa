@@ -297,7 +297,11 @@ async function main() {
       content = sanitizeMarkdown(content);
       content = content.replace(/^pubDate:\s*[^\n]+/m, `pubDate: ${pubDates[i]}`);
       const titleMatch = content.match(/^title:\s*['"]?(.+?)['"]?\s*$/m);
-      const slug = `auto-${pick.cat}-${today}-${i + 1}`;
+      let slug = `auto-${pick.cat}-${today}-${i + 1}`;
+      // 같은 날 재실행 시 슬러그 충돌 → -a, -b, -c 접미사로 회피 (2026-05-23 사고)
+      for (let suffix = 'a'.charCodeAt(0); existsSync(join(BLOG, `${slug}.md`)); suffix++) {
+        slug = `auto-${pick.cat}-${today}-${i + 1}${String.fromCharCode(suffix)}`;
+      }
       const filename = `${slug}.md`;
       writeFileSync(join(BLOG, filename), content, 'utf-8');
       console.log(`     ✓ [${i + 1}/${picks.length}] ${filename}`);
