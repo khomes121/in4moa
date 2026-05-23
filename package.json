@@ -9,11 +9,14 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "preview": "npm run build && wrangler dev",
+    "astro": "astro",
+    "generate-types": "wrangler types",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",
+    "@astrojs/cloudflare": "^13.5.4",
     "@astrojs/mdx": "^5.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
@@ -21,5 +24,11 @@
     "astro-pagefind": "^2.0.0",
     "fast-xml-parser": "^5.8.0",
     "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "wrangler": "^4.94.0"
+  },
+  "overrides": {
+    "vite": "^7"
   }
 }
