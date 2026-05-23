@@ -6,6 +6,13 @@ Disallow: /draft/
 Disallow: /admin/
 Disallow: /*?*
 
+# 한국 검색엔진 (명시적 허용)
+User-agent: Yeti
+Allow: /
+
+User-agent: Daumoa
+Allow: /
+
 # AI 크롤러 (현 정책: 학습 허용)
 User-agent: GPTBot
 Allow: /

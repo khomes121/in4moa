@@ -167,9 +167,11 @@ const articleLd =
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageURL} />
 
-<!-- 검색엔진 등록 (실제 코드 발급 후 교체) -->
+<!-- 검색엔진 소유 확인 (메타 방식) -->
+<!-- 네이버: 파일 방식은 CF/Astro가 .html 확장자 strip하며 307 redirect → 검증 실패. 메타로 우회. -->
+<meta name="naver-site-verification" content="92ea6a8618e9cfc32e60824dc794f2ea" />
+<!-- 구글: 코드 발급 후 주석 해제 -->
 <!-- <meta name="google-site-verification" content="REPLACE_WITH_GOOGLE_CODE" /> -->
-<!-- <meta name="naver-site-verification" content="REPLACE_WITH_NAVER_CODE" /> -->
 
 <!-- Structured Data -->
 <script type="application/ld+json" set:html={JSON.stringify(baseLd)} />
