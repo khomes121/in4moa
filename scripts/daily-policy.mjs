@@ -125,6 +125,18 @@ function savePublished(set) {
   writeFileSync(PUBLISHED, JSON.stringify([...set].sort(), null, 2) + '\n', 'utf-8');
 }
 
+// Claude 응답이 ```markdown ... ``` 코드펜스로 감싸 오는 경우 제거.
+// frontmatter 앞 잡담이 섞여있으면 첫 --- 부터로 잘라낸다.
+// 한 번 깨지면 Astro Content Collections 빌드 전체가 fail (2026-05-23 사고).
+function sanitizeMarkdown(raw) {
+  let s = String(raw).trim();
+  const fence = s.match(/^```(?:markdown|md)?\s*\n([\s\S]*?)\n```\s*$/);
+  if (fence) s = fence[1].trim();
+  const fmStart = s.indexOf('---');
+  if (fmStart > 0) s = s.slice(fmStart);
+  return s.endsWith('\n') ? s : s + '\n';
+}
+
 // 카테고리별 분배 (re·tax·sub·biz·news 각 1편 우선, 부족 시 가용 카테고리로 보충)
 function distribute(items, n = 5) {
   const PREFERRED = ['realestate', 'tax', 'subsidy', 'business', 'news'];
@@ -282,6 +294,7 @@ async function main() {
     const pick = picks[i];
     try {
       let content = await generate(pick, pubDates[i]);
+      content = sanitizeMarkdown(content);
       content = content.replace(/^pubDate:\s*[^\n]+/m, `pubDate: ${pubDates[i]}`);
       const titleMatch = content.match(/^title:\s*['"]?(.+?)['"]?\s*$/m);
       const slug = `auto-${pick.cat}-${today}-${i + 1}`;
