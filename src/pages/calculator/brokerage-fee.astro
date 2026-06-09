@@ -1,0 +1,205 @@
+---
+import CalcPage from '../../layouts/CalcPage.astro';
+---
+
+<CalcPage
+	slug="brokerage-fee"
+	title="중개보수(복비) 계산기 — 매매·전세·월세"
+	description="거래 종류와 금액만 넣으면 법정 상한요율로 부동산 중개수수료를 계산합니다. 월세 환산보증금 자동 계산, 2021년 개정 요율표 포함."
+	baseDate="2026-06-10"
+>
+	<div slot="calculator" class="calc-card">
+		<form id="calc-form" class="calc-grid" autocomplete="off">
+			<div class="calc-field">
+				<label for="kind">거래 종류</label>
+				<select id="kind">
+					<option value="sale">매매·교환</option>
+					<option value="jeonse">전세</option>
+					<option value="wolse">월세 (보증금 + 월세)</option>
+				</select>
+			</div>
+			<div class="calc-field">
+				<label for="ptype">물건 종류</label>
+				<select id="ptype">
+					<option value="house">주택</option>
+					<option value="officetel">오피스텔 (주거용 요건 충족)</option>
+					<option value="etc">그 외 (토지·상가 등)</option>
+				</select>
+			</div>
+			<div class="calc-field">
+				<label for="amount" id="amount-label">거래금액 (만원)</label>
+				<input type="number" id="amount" inputmode="numeric" min="0" step="100" placeholder="예: 50000 (5억 원)" required />
+			</div>
+			<div class="calc-field" id="rent-field" style="display:none">
+				<label for="rent">월세 (만원)</label>
+				<input type="number" id="rent" inputmode="numeric" min="0" step="1" placeholder="예: 100" />
+				<span class="hint">환산보증금 = 보증금 + 월세×100 (5천만 미만이면 ×70)</span>
+			</div>
+			<div class="calc-actions calc-field full">
+				<button type="submit" class="btn btn-primary">계산하기</button>
+			</div>
+		</form>
+
+		<div id="result" class="calc-result" hidden>
+			<p class="calc-result-main" id="r-total"></p>
+			<table>
+				<tbody>
+					<tr><td>적용 기준금액</td><td id="r-base"></td></tr>
+					<tr><td>상한요율</td><td id="r-rate"></td></tr>
+					<tr><td>한도액</td><td id="r-cap"></td></tr>
+					<tr><td>부가가치세(10%) 포함 시</td><td id="r-vat"></td></tr>
+				</tbody>
+			</table>
+			<p class="calc-note">
+				표시 금액은 <strong>법정 상한</strong>입니다. 요율은 상한 안에서 중개사와 협의해 정할 수
+				있고, 부가가치세는 중개사가 일반과세자인 경우 별도입니다.
+			</p>
+		</div>
+	</div>
+
+	<Fragment slot="content">
+		<h2>주택 중개보수 상한요율표 (2021.10. 개정)</h2>
+		<table>
+			<thead>
+				<tr><th>거래금액</th><th>매매·교환</th><th>임대차(전·월세)</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>5천만 원 미만</td><td>0.6% (한도 25만)</td><td>0.5% (한도 20만)</td></tr>
+				<tr><td>5천만 ~ 2억 미만</td><td>0.5% (한도 80만)</td><td>0.4% (한도 30만, 1억 미만)</td></tr>
+				<tr><td>2억 ~ 9억 미만</td><td>0.4%</td><td>0.3% (1억~6억)</td></tr>
+				<tr><td>9억 ~ 12억 미만</td><td>0.5%</td><td>0.4% (6억~12억)</td></tr>
+				<tr><td>12억 ~ 15억 미만</td><td>0.6%</td><td>0.5%</td></tr>
+				<tr><td>15억 이상</td><td>0.7%</td><td>0.6%</td></tr>
+			</tbody>
+		</table>
+		<p class="caption">
+			주거용 오피스텔(전용 85㎡ 이하 + 부엌·화장실 등 요건): 매매 0.5%, 임대차 0.4%. 그 외
+			물건(토지·상가): 0.9% 이내 협의.
+		</p>
+
+		<h2>월세는 환산보증금으로 계산</h2>
+		<p>월세 계약의 중개보수 기준금액은 다음과 같이 환산합니다.</p>
+		<blockquote>
+			<p>환산보증금 = 보증금 + (월세 × 100)</p>
+		</blockquote>
+		<p>
+			단, 이렇게 계산한 금액이 <strong>5천만 원 미만이면</strong> 월세에 100 대신
+			<strong>70</strong>을 곱해 다시 계산합니다.
+		</p>
+
+		<h2>복비 아끼는 3가지 포인트</h2>
+		<ul>
+			<li>
+				<strong>요율은 "상한"</strong> — 표의 요율은 최대치입니다. 계약 전에 보수를 협의하고
+				계약서(중개대상물 확인설명서)에 명시된 요율을 확인하세요.
+			</li>
+			<li>
+				<strong>현금영수증 의무</strong> — 중개보수는 현금영수증 의무발행 대상입니다. 소득공제도
+				챙기세요.
+			</li>
+			<li>
+				<strong>VAT 확인</strong> — 일반과세자인 중개사는 10% 부가세를 별도 청구할 수 있고,
+				간이과세자는 청구 금액이 달라집니다. 사전에 물어보는 게 깔끔합니다.
+			</li>
+		</ul>
+
+		<h2>자주 묻는 질문</h2>
+		<h3>계약이 깨지면 복비를 내야 하나요?</h3>
+		<p>
+			중개보수 청구권은 원칙적으로 <strong>계약이 성사됐을 때</strong> 발생합니다. 다만 계약 성립
+			후 당사자 사정으로 해제된 경우에는 보수를 지급해야 할 수 있습니다.
+		</p>
+		<h3>전세 끼고 매매하면 복비는 두 번인가요?</h3>
+		<p>
+			매매 중개와 임대차 승계는 별개 거래가 아니므로 매매 보수만 발생하는 것이 일반적입니다. 다만
+			새 임대차 계약을 동시에 중개했다면 각각 발생할 수 있습니다.
+		</p>
+
+		<h2>관련 정보</h2>
+		<ul>
+			<li><a href="/category/realestate/">🏠 부동산 카테고리 글 모음</a></li>
+			<li><a href="/calculator/acquisition-tax/">🏠 취득세 계산기 — 매수 비용 같이 계산하기</a></li>
+		</ul>
+	</Fragment>
+</CalcPage>
+
+<script>
+	const kindSel = document.getElementById('kind') as HTMLSelectElement;
+	const rentField = document.getElementById('rent-field') as HTMLElement;
+	const amountLabel = document.getElementById('amount-label') as HTMLElement;
+
+	kindSel.addEventListener('change', () => {
+		const isWolse = kindSel.value === 'wolse';
+		rentField.style.display = isWolse ? '' : 'none';
+		amountLabel.textContent = isWolse ? '보증금 (만원)' : kindSel.value === 'sale' ? '거래금액 (만원)' : '전세보증금 (만원)';
+	});
+
+	// 매매·교환 (주택)
+	const SALE_BRACKETS: Array<[number, number, number | null]> = [
+		[50_000_000, 0.6, 250_000],
+		[200_000_000, 0.5, 800_000],
+		[900_000_000, 0.4, null],
+		[1_200_000_000, 0.5, null],
+		[1_500_000_000, 0.6, null],
+		[Infinity, 0.7, null],
+	];
+	// 임대차 (주택)
+	const LEASE_BRACKETS: Array<[number, number, number | null]> = [
+		[50_000_000, 0.5, 200_000],
+		[100_000_000, 0.4, 300_000],
+		[600_000_000, 0.3, null],
+		[1_200_000_000, 0.4, null],
+		[1_500_000_000, 0.5, null],
+		[Infinity, 0.6, null],
+	];
+
+	function lookup(brackets: Array<[number, number, number | null]>, base: number) {
+		for (const [limit, rate, cap] of brackets) {
+			if (base < limit) return { rate, cap };
+		}
+		return { rate: brackets[brackets.length - 1][1], cap: null };
+	}
+
+	const won = (v: number) => Math.round(v).toLocaleString('ko-KR') + '원';
+
+	(document.getElementById('calc-form') as HTMLFormElement).addEventListener('submit', (e) => {
+		e.preventDefault();
+		const kind = kindSel.value;
+		const ptype = (document.getElementById('ptype') as HTMLSelectElement).value;
+		const amountMan = Number((document.getElementById('amount') as HTMLInputElement).value);
+		const rentMan = Number((document.getElementById('rent') as HTMLInputElement).value) || 0;
+		if (!amountMan && !rentMan) return;
+
+		let base = amountMan * 10000;
+		if (kind === 'wolse') {
+			base = amountMan * 10000 + rentMan * 10000 * 100;
+			if (base < 50_000_000) base = amountMan * 10000 + rentMan * 10000 * 70;
+		}
+
+		let rate: number;
+		let cap: number | null = null;
+		if (ptype === 'officetel') {
+			rate = kind === 'sale' ? 0.5 : 0.4;
+		} else if (ptype === 'etc') {
+			rate = 0.9;
+		} else {
+			const r = lookup(kind === 'sale' ? SALE_BRACKETS : LEASE_BRACKETS, base);
+			rate = r.rate;
+			cap = r.cap;
+		}
+
+		let fee = base * (rate / 100);
+		const capped = cap !== null && fee > cap;
+		if (capped && cap !== null) fee = cap;
+
+		(document.getElementById('r-total') as HTMLElement).textContent = '중개보수 상한 약 ' + won(fee);
+		(document.getElementById('r-base') as HTMLElement).textContent = won(base);
+		(document.getElementById('r-rate') as HTMLElement).textContent =
+			rate + '%' + (ptype === 'etc' ? ' 이내 협의' : '');
+		(document.getElementById('r-cap') as HTMLElement).textContent = cap
+			? won(cap) + (capped ? ' (한도 적용됨)' : '')
+			: '없음';
+		(document.getElementById('r-vat') as HTMLElement).textContent = won(fee * 1.1);
+		(document.getElementById('result') as HTMLElement).hidden = false;
+	});
+</script>

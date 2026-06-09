@@ -1,0 +1,229 @@
+{
+  "_readme": "에버그린(상시 검색 수요) 주제 큐. daily-policy-local.mjs 가 매 실행마다 done:false 인 첫 항목 1개를 글로 발행하고 done:true 처리. 키워드 기준: 검색량 × CPC(금융·정부지원 고단가) × 행동의지(신청·조회·계산). focus 의 사실관계는 글 생성 시 앵커로 사용.",
+  "topics": [
+    {
+      "slug": "evergreen-deunggibu-boneunbeop",
+      "category": "realestate",
+      "title": "등기부등본 보는 법 — 전세 계약 전 3분 체크리스트",
+      "focus": "인터넷등기소에서 열람(수수료 700원)·발급 방법. 표제부/갑구/을구 구조. 갑구=소유권(가압류·가처분·경매개시 위험신호), 을구=근저당(채권최고액 확인). 근저당+보증금이 매매가 80% 넘으면 위험. 계약 당일 잔금 직전 재열람 필수.",
+      "calc": "jeonse-conversion",
+      "done": false
+    },
+    {
+      "slug": "evergreen-jeonse-bojeungboheom",
+      "category": "realestate",
+      "title": "전세보증금 반환보증 가입 조건·비용 총정리",
+      "focus": "HUG·HF·SGI 3개 기관 비교. 보증료 대략 보증금의 연 0.1~0.2%대. 가입 시점(계약기간 절반 경과 전). 전세사기 예방 핵심 수단. 보증 한도와 주택 유형별 제한. 정확한 요율·한도는 변동 가능하므로 공식 사이트 확인 유도.",
+      "calc": "jeonse-conversion",
+      "done": false
+    },
+    {
+      "slug": "evergreen-cheongyak-1sunwi",
+      "category": "realestate",
+      "title": "청약통장 1순위 조건 — 지역·면적별 정리",
+      "focus": "주택청약종합저축 1순위: 수도권 가입 1년+12회 납입(투기과열·조정지역은 2년+24회), 비수도권 6개월. 국민주택은 납입 횟수·인정금액(월 최대 인정액), 민영주택은 지역별 예치금 기준. 세대주 요건·재당첨 제한.",
+      "calc": "subscription-score",
+      "done": false
+    },
+    {
+      "slug": "evergreen-burangwon-jeonmae",
+      "category": "realestate",
+      "title": "분양권 전매 절차와 비용 — 양도세·전매제한 핵심",
+      "focus": "전매제한 기간 확인 방법(모집공고). 전매 절차: 매매계약→실거래신고→명의변경(시행사 동의). 분양권 양도세율(보유 1년 미만 70%, 1년 이상 60% — 변동 가능성 명시). 불법 전매 리스크.",
+      "calc": "acquisition-tax",
+      "done": false
+    },
+    {
+      "slug": "evergreen-jongbuse-gujo",
+      "category": "tax",
+      "title": "종합부동산세 누가 얼마나 내나 — 공제액·계산 구조",
+      "focus": "과세 기준일 6/1. 주택 공시가격 합산 - 기본공제(9억, 1세대1주택 12억) × 공정시장가액비율 → 과세표준. 1주택 고령자·장기보유 세액공제(최대 80%). 부부 공동명의 특례. 정확 세율표는 변동 가능하므로 국세청 확인 유도.",
+      "calc": "acquisition-tax",
+      "done": false
+    },
+    {
+      "slug": "evergreen-jeungyeose-myeonje",
+      "category": "tax",
+      "title": "증여세 면제 한도 — 가족 간 증여 비과세 금액 정리",
+      "focus": "10년 합산 공제: 배우자 6억, 성인 자녀 5천만(미성년 2천만), 기타친족 1천만. 혼인·출산 증여공제 1억 추가(요건). 증여세율 10~50% 누진. 신고기한(증여일 속한 달 말일부터 3개월)·자진신고 세액공제 3%.",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-jaesanse-iljeong",
+      "category": "tax",
+      "title": "재산세 납부 일정·조회·카드 혜택 총정리",
+      "focus": "과세 기준일 6/1. 주택분 7월/9월 분납(20만 이하 7월 일괄). 위택스·이택스 조회 방법. 카드사 무이자 할부·캐시백 이벤트 활용. 납부 지연 가산세.",
+      "calc": "acquisition-tax",
+      "done": false
+    },
+    {
+      "slug": "evergreen-didimdol-jagyeok",
+      "category": "loan",
+      "title": "디딤돌 대출 자격·한도·금리 — 신청 전 체크리스트",
+      "focus": "무주택 세대주, 부부합산 소득·자산 기준(신혼·다자녀 우대), 주택가격·전용면적 제한. 한도와 LTV·DTI 적용. 기금e든든 신청 절차. 구체 수치는 변동 잦으므로 주택도시기금 공식 확인 유도 + 글에는 구조·절차 중심.",
+      "calc": "dsr",
+      "done": false
+    },
+    {
+      "slug": "evergreen-jeonse-daechul-bigyo",
+      "category": "loan",
+      "title": "전세자금대출 종류 비교 — 버팀목·일반·보증부 차이",
+      "focus": "버팀목(기금, 저금리·소득요건) vs 은행 일반 전세대출(보증기관 HUG/HF/SGI). 보증 비율·한도 차이. 갱신 시 증액 절차. 전세대출은 DSR 산정 제외(이자만 반영) 관행 — 변동 가능성 명시.",
+      "calc": "dsr",
+      "done": false
+    },
+    {
+      "slug": "evergreen-jungdosanghwan",
+      "category": "loan",
+      "title": "중도상환수수료 아끼는 법 — 면제 시점·계산 구조",
+      "focus": "통상 3년 이내 상환 시 부과, 잔여기간에 비례해 감소. 수수료율 인하 추세(2025년 개편 — 정확 수치는 은행 확인). 일부상환 연 한도 무료 조항 활용. 대환 시 총비용 비교 방법.",
+      "calc": "dsr",
+      "done": false
+    },
+    {
+      "slug": "evergreen-geunro-jangryeogeum",
+      "category": "subsidy",
+      "title": "근로장려금 신청 자격·지급액·신청 방법",
+      "focus": "단독·홑벌이·맞벌이 가구별 소득 상한과 최대 지급액(변동 — 홈택스 확인 유도). 재산 요건(가구 합산). 정기신청 5월, 반기신청 제도. 홈택스·ARS·세무서 신청 경로. 자동신청 동의 제도.",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-silup-geupyeo",
+      "category": "subsidy",
+      "title": "실업급여(구직급여) 조건·금액·신청 절차",
+      "focus": "이직 전 18개월 중 피보험 180일 이상 + 비자발적 이직. 자발적 퇴사 예외 사유. 지급액 = 평균임금 60%(상한·하한 있음, 변동). 소정급여일수(연령·가입기간별 120~270일). 워크넷 구직등록→수급자격 신청→실업인정.",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-jugeo-geupyeo",
+      "category": "subsidy",
+      "title": "주거급여 신청 자격과 지원 금액 — 임차·자가 모두",
+      "focus": "중위소득 기준(% 변동 — 복지로 확인), 부양의무자 기준 폐지. 임차가구: 지역·가구원수별 기준임대료 상한. 자가가구: 수선비 지원. 복지로·주민센터 신청. 청년 분리지급 제도.",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-cheongnyeon-doyak",
+      "category": "subsidy",
+      "title": "청년도약계좌 조건·정부기여금 — 가입 전 따져볼 것",
+      "focus": "만 19~34세, 개인소득·가구소득 요건. 월 납입 한도와 소득 구간별 정부기여금 매칭. 5년 만기 구조, 중도해지 불이익과 특별중도해지 사유. 청년희망적금과 중복 문제. 수치 변동 가능성 명시.",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-gicho-yeongeum",
+      "category": "subsidy",
+      "title": "기초연금 수급 자격 — 소득인정액 계산 구조",
+      "focus": "만 65세 이상, 소득인정액 하위 70%. 소득인정액 = 소득평가액 + 재산의 소득환산액(주택·금융재산 공제 구조). 국민연금 연계 감액. 복지로 모의계산 활용 안내. 신청주의(자동 지급 아님) 강조.",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-sajangnim-deungrok",
+      "category": "business",
+      "title": "사업자등록 절차 — 홈택스로 하루 만에 끝내기",
+      "focus": "홈택스 온라인 신청 절차(업종코드 선택 팁). 일반·간이·면세 구분 선택. 임대차계약서 등 필요 서류. 사업 개시 20일 이내 등록(미등록 가산세·매입세액 불공제 불이익). 공동사업자·온라인쇼핑몰 통신판매업 신고.",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-ganee-vs-ilban",
+      "category": "business",
+      "title": "간이과세 vs 일반과세 — 뭐가 유리한지 판단 기준",
+      "focus": "간이과세 기준(연 매출 — 변동 가능, 홈택스 확인). 세금계산서 발급·매입세액공제 차이. 부가세 부담 비교 시뮬레이션 사고법. 간이→일반 전환 시점과 포기 신고. 초기 시설투자 크면 일반과세가 유리한 이유(환급).",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-bugase-iljeong",
+      "category": "business",
+      "title": "부가가치세 신고 일정·가산세 — 사업자 연간 달력",
+      "focus": "일반과세 1기(1~6월분, 7/25 신고)·2기(7~12월분, 다음해 1/25). 예정고지·예정신고. 간이과세자 연 1회(1/25). 무신고·납부지연 가산세 구조. 홈택스 신고 경로와 전자신고 세액공제.",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-sosanggongin-jageum",
+      "category": "business",
+      "title": "소상공인 정책자금 종류와 신청 경로 정리",
+      "focus": "소상공인시장진흥공단 직접대출·대리대출 구조. 일반경영안정자금·특화자금 유형. 신청 경로(소상공인정책자금 사이트). 신용점수·매출 요건 일반론. 지역신보 보증 연계. 금리·한도는 공고별 확인 유도.",
+      "calc": "dsr",
+      "done": false
+    },
+    {
+      "slug": "evergreen-chwideukse-guide",
+      "category": "calculator",
+      "title": "취득세 계산기 활용 가이드 — 사례 5개로 보는 내 세금",
+      "focus": "사이트 내 취득세 계산기(/calculator/acquisition-tax/) 사용법. 사례: 5억 1주택, 7.5억 1주택(구간 공식), 조정지역 2주택 8% 중과, 85㎡ 초과 농특세, 일시적 2주택. 각 사례 표로 정리. 계산기 링크 본문 3회 이상.",
+      "calc": "acquisition-tax",
+      "done": false
+    },
+    {
+      "slug": "evergreen-bokbi-guide",
+      "category": "calculator",
+      "title": "중개수수료 계산기 활용 가이드 — 협의로 깎는 실전 팁",
+      "focus": "사이트 내 중개보수 계산기(/calculator/brokerage-fee/) 사용법. 매매 5억/10억, 전세 3억, 월세 1000/70 사례. 상한요율 vs 협의 실무(계약 전 문자로 확정 팁). 현금영수증·VAT 체크.",
+      "calc": "brokerage-fee",
+      "done": false
+    },
+    {
+      "slug": "evergreen-dsr-guide",
+      "category": "calculator",
+      "title": "DSR 계산기로 내 대출 한도 미리 보는 법",
+      "focus": "사이트 내 DSR 계산기(/calculator/dsr/) 사용법. 연소득 6천·대출 3억 사례, 스트레스 금리 적용 전후 비교, 만기 30년 vs 40년 차이. 한도 늘리는 합법적 방법(만기 연장·고정금리·기존대출 정리).",
+      "calc": "dsr",
+      "done": false
+    },
+    {
+      "slug": "evergreen-gajeom-guide",
+      "category": "calculator",
+      "title": "청약 가점 계산기 — 내 점수로 어디까지 노릴 수 있나",
+      "focus": "사이트 내 청약가점 계산기(/calculator/subscription-score/) 사용법. 30대 신혼/40대 4인 가구/50대 장기 무주택 사례별 점수. 점수대별 전략(가점제 vs 추첨제 vs 특공). 부양가족 산정 실수 주의.",
+      "calc": "subscription-score",
+      "done": false
+    },
+    {
+      "slug": "evergreen-jeonwolse-guide",
+      "category": "calculator",
+      "title": "전월세 전환 계산기 — 갱신 때 월세 적정선 검증하기",
+      "focus": "사이트 내 전월세 전환 계산기(/calculator/jeonse-conversion/) 사용법. 전세 3억→보증금 5천 월세 전환 사례, 법정 전환율 초과 검증 사례, 월세→전세 역산. 갱신요구권과 5% 상한 관계.",
+      "calc": "jeonse-conversion",
+      "done": false
+    },
+    {
+      "slug": "evergreen-yangdose-sinngo",
+      "category": "tax",
+      "title": "양도소득세 신고 기한·방법 — 놓치면 가산세",
+      "focus": "양도일이 속한 달의 말일부터 2개월 이내 예정신고. 홈택스 신고 경로. 무신고 가산세 20%·납부지연 가산세. 필요경비 인정 항목(취득세·중개보수·자본적지출). 1세대1주택 비과세도 고가주택은 신고 필요.",
+      "calc": "acquisition-tax",
+      "done": false
+    },
+    {
+      "slug": "evergreen-jeonipsingo",
+      "category": "realestate",
+      "title": "전입신고·확정일자 — 보증금 지키는 순서가 중요하다",
+      "focus": "대항력 = 주택 인도 + 전입신고(다음날 0시 효력). 확정일자 = 우선변제권. 정부24 온라인 전입신고, 인터넷등기소 확정일자. 잔금일에 전입+확정일자 당일 처리 루틴. 임대차 신고제와 확정일자 자동 부여.",
+      "calc": "jeonse-conversion",
+      "done": false
+    },
+    {
+      "slug": "evergreen-chulsan-jiwon",
+      "category": "subsidy",
+      "title": "출산 지원금 한눈에 — 첫만남이용권부터 부모급여까지",
+      "focus": "첫만남이용권(바우처), 부모급여(0세·1세 월 지급액 — 변동 확인 유도), 아동수당, 지자체별 출산축하금. 신청 경로(행복출산 원스톱). 육아휴직 급여와의 관계 간단 언급.",
+      "calc": null,
+      "done": false
+    },
+    {
+      "slug": "evergreen-jutaek-yeongeum",
+      "category": "loan",
+      "title": "주택연금 수령액과 가입 조건 — 노후 현금흐름 만들기",
+      "focus": "만 55세 이상, 공시가격 기준 주택(한도 변동 — HF 확인). 종신지급·확정기간 방식. 수령액 결정 요인(연령·주택가격·금리). 중도해지 시 불이익. 가입자 사망 시 배우자 승계. HF 예상연금 조회 안내.",
+      "calc": "dsr",
+      "done": false
+    }
+  ]
+}

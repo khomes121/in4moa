@@ -1,0 +1,162 @@
+---
+import CalcPage from '../../layouts/CalcPage.astro';
+---
+
+<CalcPage
+	slug="subscription-score"
+	title="청약 가점 계산기 — 84점 만점 내 점수는?"
+	description="무주택 기간·부양가족 수·청약통장 가입기간 3개 항목으로 청약 가점을 계산합니다. 항목별 배점표와 흔한 실수 정리."
+	baseDate="2026-06-10"
+>
+	<div slot="calculator" class="calc-card">
+		<form id="calc-form" class="calc-grid" autocomplete="off">
+			<div class="calc-field">
+				<label for="homeless">무주택 기간</label>
+				<select id="homeless">
+					<option value="-1">유주택 (0점)</option>
+					<option value="0">1년 미만</option>
+					<option value="1">1년 이상 ~ 2년 미만</option>
+					<option value="2">2년 이상 ~ 3년 미만</option>
+					<option value="3">3년 이상 ~ 4년 미만</option>
+					<option value="4">4년 이상 ~ 5년 미만</option>
+					<option value="5">5년 이상 ~ 6년 미만</option>
+					<option value="6">6년 이상 ~ 7년 미만</option>
+					<option value="7">7년 이상 ~ 8년 미만</option>
+					<option value="8">8년 이상 ~ 9년 미만</option>
+					<option value="9">9년 이상 ~ 10년 미만</option>
+					<option value="10">10년 이상 ~ 11년 미만</option>
+					<option value="11">11년 이상 ~ 12년 미만</option>
+					<option value="12">12년 이상 ~ 13년 미만</option>
+					<option value="13">13년 이상 ~ 14년 미만</option>
+					<option value="14">14년 이상 ~ 15년 미만</option>
+					<option value="15">15년 이상</option>
+				</select>
+				<span class="hint">만 30세(또는 그 전 혼인 시 혼인신고일)부터 기산</span>
+			</div>
+			<div class="calc-field">
+				<label for="dependents">부양가족 수 (본인 제외)</label>
+				<select id="dependents">
+					<option value="0">0명</option>
+					<option value="1">1명</option>
+					<option value="2">2명</option>
+					<option value="3">3명</option>
+					<option value="4">4명</option>
+					<option value="5">5명</option>
+					<option value="6">6명 이상</option>
+				</select>
+				<span class="hint">배우자·직계존속(3년 이상 동일 등본)·미혼 자녀</span>
+			</div>
+			<div class="calc-field">
+				<label for="account">청약통장 가입기간</label>
+				<select id="account">
+					<option value="0">6개월 미만</option>
+					<option value="1">6개월 이상 ~ 1년 미만</option>
+					<option value="2">1년 이상 ~ 2년 미만</option>
+					<option value="3">2년 이상 ~ 3년 미만</option>
+					<option value="4">3년 이상 ~ 4년 미만</option>
+					<option value="5">4년 이상 ~ 5년 미만</option>
+					<option value="6">5년 이상 ~ 6년 미만</option>
+					<option value="7">6년 이상 ~ 7년 미만</option>
+					<option value="8">7년 이상 ~ 8년 미만</option>
+					<option value="9">8년 이상 ~ 9년 미만</option>
+					<option value="10">9년 이상 ~ 10년 미만</option>
+					<option value="11">10년 이상 ~ 11년 미만</option>
+					<option value="12">11년 이상 ~ 12년 미만</option>
+					<option value="13">12년 이상 ~ 13년 미만</option>
+					<option value="14">13년 이상 ~ 14년 미만</option>
+					<option value="15">14년 이상 ~ 15년 미만</option>
+					<option value="16">15년 이상</option>
+				</select>
+			</div>
+			<div class="calc-actions calc-field">
+				<button type="submit" class="btn btn-primary">계산하기</button>
+			</div>
+		</form>
+
+		<div id="result" class="calc-result" hidden>
+			<p class="calc-result-main" id="r-total"></p>
+			<table>
+				<tbody>
+					<tr><td>무주택 기간 (최대 32점)</td><td id="r-homeless"></td></tr>
+					<tr><td>부양가족 (최대 35점)</td><td id="r-dep"></td></tr>
+					<tr><td>통장 가입기간 (최대 17점)</td><td id="r-acc"></td></tr>
+				</tbody>
+			</table>
+			<p class="calc-note" id="r-verdict"></p>
+		</div>
+	</div>
+
+	<Fragment slot="content">
+		<h2>청약 가점제 배점 구조 (84점 만점)</h2>
+		<table>
+			<thead>
+				<tr><th>항목</th><th>계산 방법</th><th>최대</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>무주택 기간</td><td>1년 미만 2점, 이후 1년마다 +2점</td><td>32점 (15년 이상)</td></tr>
+				<tr><td>부양가족 수</td><td>0명 5점, 1명마다 +5점</td><td>35점 (6명 이상)</td></tr>
+				<tr><td>통장 가입기간</td><td>6개월 미만 1점, 6개월~1년 2점, 이후 1년마다 +1점</td><td>17점 (15년 이상)</td></tr>
+			</tbody>
+		</table>
+
+		<h2>가장 흔한 실수 3가지</h2>
+		<ul>
+			<li>
+				<strong>무주택 기간 기산점 착각</strong> — 무주택이 된 날이 아니라
+				<strong>만 30세부터</strong> (30세 전에 혼인했다면 혼인신고일부터) 계산합니다. 20대 내내
+				무주택이어도 30세 전 기간은 인정되지 않습니다.
+			</li>
+			<li>
+				<strong>부양가족에 부모님 포함 조건</strong> — 직계존속은 <strong>3년 이상 같은
+				주민등록등본</strong>에 있어야 하고, 그 직계존속이 유주택이면 제외됩니다.
+			</li>
+			<li>
+				<strong>분양권도 주택</strong> — 본인 또는 세대원이 분양권·입주권을 보유하면 유주택으로
+				간주돼 무주택 점수가 0점이 됩니다.
+			</li>
+		</ul>
+
+		<h2>가점이 낮다면 — 추첨제 노리기</h2>
+		<p>
+			가점이 낮은 청년·신혼부부는 <strong>추첨제 물량</strong>이나
+			<strong>특별공급</strong>(생애최초·신혼부부·다자녀 등)을 함께 노리는 것이 현실적입니다.
+			전용면적·지역별로 가점제와 추첨제 비율이 다르니 모집공고를 꼭 확인하세요.
+		</p>
+
+		<h2>관련 정보</h2>
+		<ul>
+			<li><a href="/category/realestate/">🏠 부동산 카테고리 글 모음 — 청약·분양 소식</a></li>
+			<li><a href="/category/subsidy/">🎁 정부지원금 카테고리 — 신혼·청년 지원</a></li>
+			<li><a href="https://www.applyhome.co.kr" rel="noopener" target="_blank">청약홈 — 공식 청약 사이트</a></li>
+		</ul>
+	</Fragment>
+</CalcPage>
+
+<script>
+	(document.getElementById('calc-form') as HTMLFormElement).addEventListener('submit', (e) => {
+		e.preventDefault();
+		const h = Number((document.getElementById('homeless') as HTMLSelectElement).value);
+		const d = Number((document.getElementById('dependents') as HTMLSelectElement).value);
+		const a = Number((document.getElementById('account') as HTMLSelectElement).value);
+
+		// 무주택: 유주택 0 / 1년 미만 2 / +2점씩 / 15년 이상 32
+		const hScore = h < 0 ? 0 : Math.min(2 + h * 2, 32);
+		// 부양가족: 5 + 5n, 최대 35
+		const dScore = Math.min(5 + d * 5, 35);
+		// 통장: 6개월 미만 1 / 6개월~1년 2 / 이후 +1 / 최대 17
+		const aScore = Math.min(1 + a, 17);
+
+		const total = hScore + dScore + aScore;
+		(document.getElementById('r-total') as HTMLElement).textContent = `총 ${total}점 / 84점`;
+		(document.getElementById('r-homeless') as HTMLElement).textContent = `${hScore}점`;
+		(document.getElementById('r-dep') as HTMLElement).textContent = `${dScore}점`;
+		(document.getElementById('r-acc') as HTMLElement).textContent = `${aScore}점`;
+
+		const verdict = document.getElementById('r-verdict') as HTMLElement;
+		if (total >= 64) verdict.textContent = '수도권 인기 단지도 노려볼 수 있는 상위권 점수대입니다.';
+		else if (total >= 50) verdict.textContent = '중상위권입니다. 단지별 당첨 커트라인을 비교해 전략적으로 지원하세요.';
+		else if (total >= 35) verdict.textContent = '가점제만으로는 경쟁이 어려울 수 있습니다. 추첨제·특별공급을 병행 검토하세요.';
+		else verdict.textContent = '추첨제 물량과 특별공급(생애최초·신혼부부 등) 중심 전략을 권합니다.';
+		(document.getElementById('result') as HTMLElement).hidden = false;
+	});
+</script>

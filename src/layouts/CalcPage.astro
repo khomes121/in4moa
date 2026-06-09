@@ -1,0 +1,98 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { CALCULATORS, SITE_TITLE } from '../consts';
+
+interface Props {
+	slug: string;
+	title: string;
+	description: string;
+	baseDate: string; // 요율·법령 기준일 (YYYY-MM-DD)
+}
+
+const { slug, title, description, baseDate } = Astro.props;
+const others = CALCULATORS.filter((c) => c.slug !== slug);
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const appLd = {
+	'@context': 'https://schema.org',
+	'@type': 'WebApplication',
+	name: title,
+	url: canonicalURL.toString(),
+	applicationCategory: 'FinanceApplication',
+	operatingSystem: 'Any',
+	offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' },
+	inLanguage: 'ko-KR',
+	description,
+};
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead title={`${title} · ${SITE_TITLE}`} description={description} />
+		<script type="application/ld+json" set:html={JSON.stringify(appLd)} />
+	</head>
+	<body>
+		<Header />
+		<main id="main" class="container">
+			<article class="prose">
+				<header>
+					<a href="/calculator/" class="cat-badge">🧮 계산기</a>
+					<h1>{title}</h1>
+					<p class="caption">
+						기준일 {baseDate} · 입력값은 브라우저 안에서만 계산되며 서버로 전송되지 않습니다.
+					</p>
+				</header>
+
+				<slot name="calculator" />
+
+				<AdSlot />
+
+				<slot name="content" />
+
+				<aside class="callout callout-disclaimer">
+					<p class="callout-title">⚠️ 면책</p>
+					<p>
+						이 계산기는 일반 정보 제공용 간이 계산 도구입니다. 실제 세액·수수료·한도는 개별
+						조건(감면·중과 예외·금융사 심사 기준 등)에 따라 달라질 수 있으니, 큰 금액이 걸린
+						결정은 반드시 세무사·중개사·금융기관 등 자격 있는 전문가와 확인하세요.
+					</p>
+				</aside>
+
+				<section aria-labelledby="other-calcs">
+					<h2 id="other-calcs">다른 계산기</h2>
+					<ul class="calc-cross">
+						{
+							others.map((c) => (
+								<li>
+									<a href={`/calculator/${c.slug}/`}>
+										<span class="name">
+											{c.emoji} {c.name}
+										</span>
+										{c.short}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</section>
+			</article>
+		</main>
+		<Footer />
+
+		<style>
+			main {
+				padding: var(--space-6) var(--space-4) var(--space-8);
+			}
+			.prose h2 {
+				margin-top: var(--space-7);
+			}
+			header h1 {
+				margin: var(--space-3) 0 var(--space-2);
+			}
+		</style>
+	</body>
+</html>

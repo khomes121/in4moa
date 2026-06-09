@@ -1,0 +1,155 @@
+---
+import CalcPage from '../../layouts/CalcPage.astro';
+---
+
+<CalcPage
+	slug="jeonse-conversion"
+	title="전월세 전환 계산기 — 전세↔월세 얼마가 적정?"
+	description="전월세 전환율을 적용해 전세 보증금을 월세로, 월세를 전세로 환산합니다. 법정 전환율 설명과 계약 갱신 시 주의점 포함."
+	baseDate="2026-06-10"
+>
+	<div slot="calculator" class="calc-card">
+		<form id="calc-form" class="calc-grid" autocomplete="off">
+			<div class="calc-field full">
+				<label for="mode">변환 방향</label>
+				<select id="mode">
+					<option value="j2w">전세 → 월세 (보증금 낮추고 월세 내기)</option>
+					<option value="w2j">월세 → 전세 (월세 없애고 보증금으로)</option>
+				</select>
+			</div>
+			<div class="calc-field">
+				<label for="jeonse" id="l-jeonse">전세보증금 (만원)</label>
+				<input type="number" id="jeonse" inputmode="numeric" min="0" step="100" placeholder="예: 30000 (3억 원)" required />
+			</div>
+			<div class="calc-field" id="f-deposit">
+				<label for="deposit">전환 후 월세보증금 (만원)</label>
+				<input type="number" id="deposit" inputmode="numeric" min="0" step="100" placeholder="예: 5000" />
+			</div>
+			<div class="calc-field" id="f-rent" style="display:none">
+				<label for="rent">월세 (만원)</label>
+				<input type="number" id="rent" inputmode="numeric" min="0" step="1" placeholder="예: 80" />
+			</div>
+			<div class="calc-field">
+				<label for="cvr">전환율 (연 %)</label>
+				<input type="number" id="cvr" inputmode="decimal" min="0" step="0.1" value="5.0" required />
+				<span class="hint">법정 상한 = 한국은행 기준금리 + 2.0%p (갱신 계약에 적용)</span>
+			</div>
+			<div class="calc-actions calc-field full">
+				<button type="submit" class="btn btn-primary">계산하기</button>
+			</div>
+		</form>
+
+		<div id="result" class="calc-result" hidden>
+			<p class="calc-result-main" id="r-main"></p>
+			<table>
+				<tbody>
+					<tr><td>전환 대상 금액</td><td id="r-base"></td></tr>
+					<tr><td>적용 전환율</td><td id="r-rate"></td></tr>
+					<tr><td>연간 환산액</td><td id="r-annual"></td></tr>
+				</tbody>
+			</table>
+			<p class="calc-note">
+				법정 전환율 상한은 <strong>기존 계약을 갱신하면서 전세→월세로 바꿀 때</strong> 적용됩니다.
+				신규 계약은 시장 시세에 따르므로 주변 단지의 실제 전환율과 비교해 보세요.
+			</p>
+		</div>
+	</div>
+
+	<Fragment slot="content">
+		<h2>전월세 전환율이란</h2>
+		<p>
+			보증금을 월세로 바꿀 때 적용하는 연 이율입니다. 예를 들어 보증금 1억 원을 전환율 5%로 월세로
+			돌리면 연 500만 원, <strong>월 약 41.7만 원</strong>이 됩니다.
+		</p>
+		<blockquote>
+			<p>월세 = (전세보증금 − 월세보증금) × 전환율 ÷ 12</p>
+		</blockquote>
+
+		<h2>법정 전환율 — 갱신 계약의 상한선</h2>
+		<p>
+			주택임대차보호법상 계약 갱신 시 전세→월세 전환율은 <strong>"한국은행 기준금리 +
+			2.0%p"와 연 10% 중 낮은 값</strong>을 넘을 수 없습니다. 기준금리는 수시로 바뀌므로 계산 시점의
+			기준금리를 확인해 입력하세요.
+		</p>
+		<ul>
+			<li>기준금리 2.5%라면 → 법정 상한 4.5%</li>
+			<li>기준금리 3.0%라면 → 법정 상한 5.0%</li>
+		</ul>
+
+		<h2>세입자·집주인 각각의 체크포인트</h2>
+		<ul>
+			<li>
+				<strong>세입자</strong> — 집주인이 제시한 월세가 법정 전환율보다 높게 계산됐는지 역산해
+				보세요. 갱신 계약이라면 초과분은 거절할 수 있습니다.
+			</li>
+			<li>
+				<strong>집주인</strong> — 월세 전환 시 보증금 반환 자금이 필요합니다. 반환 시점과
+				전세퇴거자금대출 가능 여부를 미리 확인하세요.
+			</li>
+			<li>
+				<strong>공통</strong> — 월세는 소득세(임대소득)·세액공제(월세 세액공제) 등 세금 문제가
+				함께 움직입니다. 연간 금액이 크다면 세무 영향도 같이 따져보세요.
+			</li>
+		</ul>
+
+		<h2>관련 정보</h2>
+		<ul>
+			<li><a href="/category/realestate/">🏠 부동산 카테고리 — 전월세 시장 동향</a></li>
+			<li><a href="/calculator/dsr/">💳 DSR 계산기 — 전세대출 상환 부담 확인</a></li>
+			<li><a href="/calculator/brokerage-fee/">🤝 중개보수 계산기 — 임대차 복비 확인</a></li>
+		</ul>
+	</Fragment>
+</CalcPage>
+
+<script>
+	const modeSel = document.getElementById('mode') as HTMLSelectElement;
+	const lJeonse = document.getElementById('l-jeonse') as HTMLElement;
+	const fDeposit = document.getElementById('f-deposit') as HTMLElement;
+	const fRent = document.getElementById('f-rent') as HTMLElement;
+
+	modeSel.addEventListener('change', () => {
+		const j2w = modeSel.value === 'j2w';
+		lJeonse.textContent = j2w ? '전세보증금 (만원)' : '월세보증금 (만원)';
+		fDeposit.style.display = j2w ? '' : 'none';
+		fRent.style.display = j2w ? 'none' : '';
+	});
+
+	const won = (v: number) => Math.round(v).toLocaleString('ko-KR') + '원';
+
+	(document.getElementById('calc-form') as HTMLFormElement).addEventListener('submit', (e) => {
+		e.preventDefault();
+		const j2w = modeSel.value === 'j2w';
+		const jeonse = Number((document.getElementById('jeonse') as HTMLInputElement).value) * 10000;
+		const deposit = (Number((document.getElementById('deposit') as HTMLInputElement).value) || 0) * 10000;
+		const rent = (Number((document.getElementById('rent') as HTMLInputElement).value) || 0) * 10000;
+		const cvr = Number((document.getElementById('cvr') as HTMLInputElement).value);
+		if (!jeonse || !cvr) return;
+
+		const main = document.getElementById('r-main') as HTMLElement;
+		const base = document.getElementById('r-base') as HTMLElement;
+		const rateEl = document.getElementById('r-rate') as HTMLElement;
+		const annual = document.getElementById('r-annual') as HTMLElement;
+
+		if (j2w) {
+			const converted = jeonse - deposit;
+			if (converted <= 0) {
+				main.textContent = '전환할 보증금이 없습니다 (월세보증금이 전세보증금 이상)';
+				base.textContent = rateEl.textContent = annual.textContent = '-';
+			} else {
+				const yearly = converted * (cvr / 100);
+				main.textContent = `적정 월세 약 ${won(yearly / 12)} (보증금 ${won(deposit)})`;
+				base.textContent = won(converted);
+				rateEl.textContent = cvr + '%';
+				annual.textContent = won(yearly);
+			}
+		} else {
+			if (!rent) return;
+			const addDeposit = (rent * 12) / (cvr / 100);
+			main.textContent = `전세 환산 보증금 약 ${won(jeonse + addDeposit)}`;
+			base.textContent = won(rent) + ' / 월';
+			rateEl.textContent = cvr + '%';
+			annual.textContent = won(rent * 12);
+		}
+		(document.getElementById('result') as HTMLElement).hidden = false;
+	});
+</script>

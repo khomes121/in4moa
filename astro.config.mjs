@@ -26,6 +26,9 @@ export default defineConfig({
 				if (/^https:\/\/in4moa\.store\/?$/.test(url)) {
 					return { ...item, priority: 1.0, changefreq: 'daily' };
 				}
+				if (/\/calculator\//.test(url)) {
+					return { ...item, priority: 0.9, changefreq: 'monthly' };
+				}
 				if (/\/category\//.test(url)) {
 					return { ...item, priority: 0.8, changefreq: 'daily' };
 				}

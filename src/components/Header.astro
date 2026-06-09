@@ -19,6 +19,9 @@ const isActive = (href: string) =>
 			<nav class="nav-primary" aria-label="주요 메뉴">
 				<a href="/" class:list={['nav-link', { active: isActive('/') }]}>홈</a>
 				<a href="/blog" class:list={['nav-link', { active: isActive('/blog') }]}>블로그</a>
+				<a href="/calculator" class:list={['nav-link', { active: isActive('/calculator') }]}
+					>계산기</a
+				>
 				<a
 					href="/policy-feed"
 					class:list={['nav-link', { active: isActive('/policy-feed') }]}>정책 피드</a
@@ -92,6 +95,7 @@ const isActive = (href: string) =>
 		<nav class="container" aria-label="모바일 메뉴">
 			<a href="/" class="m-link">🏠 홈</a>
 			<a href="/blog" class="m-link">📝 블로그</a>
+			<a href="/calculator" class="m-link">🧮 계산기</a>
 			<a href="/policy-feed" class="m-link">📡 정책 피드</a>
 			<a href="/search" class="m-link">🔍 검색</a>
 			<a href="/about" class="m-link">ℹ️ 소개</a>

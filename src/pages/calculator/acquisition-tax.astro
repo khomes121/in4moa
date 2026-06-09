@@ -1,0 +1,180 @@
+---
+import CalcPage from '../../layouts/CalcPage.astro';
+---
+
+<CalcPage
+	slug="acquisition-tax"
+	title="취득세 계산기 — 주택 매수 세금 한 번에"
+	description="주택 가격·보유 주택 수·조정대상지역·전용면적만 넣으면 취득세·지방교육세·농어촌특별세 합계를 바로 계산합니다. 2026년 기준 요율표·중과 규정 포함."
+	baseDate="2026-06-10"
+>
+	<div slot="calculator" class="calc-card">
+		<form id="calc-form" class="calc-grid" autocomplete="off">
+			<div class="calc-field full">
+				<label for="price">주택 취득가액 (만원)</label>
+				<input type="number" id="price" inputmode="numeric" min="0" step="100" placeholder="예: 60000 (6억 원)" required />
+				<span class="hint">실제 매매가 기준. 6억 = 60000, 9억 = 90000</span>
+			</div>
+			<div class="calc-field">
+				<label for="houses">취득 후 보유 주택 수</label>
+				<select id="houses">
+					<option value="1">1주택 (또는 일시적 2주택)</option>
+					<option value="2">2주택</option>
+					<option value="3">3주택</option>
+					<option value="4">4주택 이상·법인</option>
+				</select>
+			</div>
+			<div class="calc-field">
+				<label for="adjusted">조정대상지역 여부</label>
+				<select id="adjusted">
+					<option value="n">비조정대상지역</option>
+					<option value="y">조정대상지역</option>
+				</select>
+			</div>
+			<div class="calc-field">
+				<label for="size">전용면적</label>
+				<select id="size">
+					<option value="small">85㎡ 이하</option>
+					<option value="large">85㎡ 초과</option>
+				</select>
+				<span class="hint">85㎡ 초과 시 농어촌특별세 부과</span>
+			</div>
+			<div class="calc-actions calc-field">
+				<button type="submit" class="btn btn-primary">계산하기</button>
+			</div>
+		</form>
+
+		<div id="result" class="calc-result" hidden>
+			<p class="calc-result-main" id="r-total"></p>
+			<table>
+				<tbody>
+					<tr><td>적용 취득세율</td><td id="r-rate"></td></tr>
+					<tr><td>취득세</td><td id="r-acq"></td></tr>
+					<tr><td>지방교육세</td><td id="r-edu"></td></tr>
+					<tr><td>농어촌특별세</td><td id="r-rural"></td></tr>
+				</tbody>
+			</table>
+			<p class="calc-note">
+				생애최초 주택 감면, 일시적 2주택 처분 조건, 상속·증여 취득 등 특례는 반영되지 않은 간이
+				계산입니다.
+			</p>
+		</div>
+	</div>
+
+	<Fragment slot="content">
+		<h2>2026년 주택 취득세율 한눈에</h2>
+		<p>
+			주택 유상취득 세율은 <strong>취득가액 + 보유 주택 수 + 조정대상지역 여부</strong> 3가지로
+			결정됩니다.
+		</p>
+		<table>
+			<thead>
+				<tr><th>구분</th><th>조정대상지역</th><th>비조정대상지역</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>1주택</td><td>1~3%</td><td>1~3%</td></tr>
+				<tr><td>2주택</td><td>8% (일시적 2주택 제외)</td><td>1~3%</td></tr>
+				<tr><td>3주택</td><td>12%</td><td>8%</td></tr>
+				<tr><td>4주택 이상·법인</td><td>12%</td><td>12%</td></tr>
+			</tbody>
+		</table>
+		<p>
+			1~3% 구간의 정확한 세율은 다음 공식으로 구합니다 (6억 초과 ~ 9억 이하 구간):
+		</p>
+		<blockquote>
+			<p>세율(%) = 취득가액(억 원) × 2/3 − 3</p>
+		</blockquote>
+		<ul>
+			<li><strong>6억 원 이하</strong> — 1%</li>
+			<li><strong>6억 초과 ~ 9억 이하</strong> — 1~3% 사이를 가격에 비례해 적용 (예: 7.5억 → 2%)</li>
+			<li><strong>9억 초과</strong> — 3%</li>
+		</ul>
+
+		<h2>같이 붙는 세금 2가지</h2>
+		<ul>
+			<li>
+				<strong>지방교육세</strong> — 표준세율(1~3%) 주택은 취득세율의 절반에 20%를 곱한
+				0.1~0.3%. 중과(8%·12%) 주택은 0.4% 고정.
+			</li>
+			<li>
+				<strong>농어촌특별세</strong> — 전용 85㎡ 초과 주택만 부과. 표준세율 주택 0.2%, 8% 중과
+				0.6%, 12% 중과 1.0%. 85㎡ 이하는 면제.
+			</li>
+		</ul>
+
+		<h2>자주 묻는 질문</h2>
+		<h3>일시적 2주택은 8% 중과인가요?</h3>
+		<p>
+			아닙니다. 이사 등으로 신규 주택을 취득하고 <strong>종전 주택을 처분 기한 안에 매도</strong>하면
+			1주택 세율(1~3%)이 적용됩니다. 기한 안에 처분하지 못하면 차액이 추징됩니다.
+		</p>
+		<h3>분양권·입주권도 주택 수에 포함되나요?</h3>
+		<p>
+			2020년 8월 12일 이후 취득한 분양권·입주권·주거용 오피스텔은 취득세 중과 판단 시 주택 수에
+			포함됩니다.
+		</p>
+		<h3>생애최초 감면은 얼마나 되나요?</h3>
+		<p>
+			생애최초 주택 구입 시 일정 가액 이하 주택에 대해 취득세 감면(한도 내 면제 또는 50% 감면)이
+			적용될 수 있습니다. 감면 요건·한도는 지방세특례제한법 개정에 따라 달라지므로 계약 전
+			시·군·구청 세무과 또는 위택스에서 확인하세요.
+		</p>
+
+		<h2>관련 정보</h2>
+		<ul>
+			<li><a href="/category/tax/">🧾 세금 카테고리 글 모음</a></li>
+			<li><a href="/category/realestate/">🏠 부동산 카테고리 글 모음</a></li>
+			<li><a href="https://www.wetax.go.kr" rel="noopener" target="_blank">위택스 — 지방세 신고·납부 (공식)</a></li>
+		</ul>
+	</Fragment>
+</CalcPage>
+
+<script>
+	const form = document.getElementById('calc-form') as HTMLFormElement;
+	const won = (v: number) => Math.round(v).toLocaleString('ko-KR') + '원';
+
+	form.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const priceMan = Number((document.getElementById('price') as HTMLInputElement).value);
+		if (!priceMan || priceMan <= 0) return;
+		const price = priceMan * 10000; // 원
+		const houses = Number((document.getElementById('houses') as HTMLSelectElement).value);
+		const adjusted = (document.getElementById('adjusted') as HTMLSelectElement).value === 'y';
+		const large = (document.getElementById('size') as HTMLSelectElement).value === 'large';
+
+		// 표준세율 (1~3%) 계산
+		const eok = price / 100_000_000;
+		let stdRate: number;
+		if (eok <= 6) stdRate = 1;
+		else if (eok <= 9) stdRate = (eok * 2) / 3 - 3;
+		else stdRate = 3;
+		stdRate = Math.round(stdRate * 100) / 100;
+
+		// 중과 판정
+		let rate: number;
+		let tier: 'std' | 'mid' | 'high';
+		if (houses === 1) { rate = stdRate; tier = 'std'; }
+		else if (houses === 2) {
+			if (adjusted) { rate = 8; tier = 'mid'; } else { rate = stdRate; tier = 'std'; }
+		} else if (houses === 3) {
+			if (adjusted) { rate = 12; tier = 'high'; } else { rate = 8; tier = 'mid'; }
+		} else { rate = 12; tier = 'high'; }
+
+		const acq = price * (rate / 100);
+		// 지방교육세: 표준 = (세율/2)의 20% → 0.1~0.3% / 중과 8%·12% = 0.4%
+		const eduRate = tier === 'std' ? (rate / 2) * 0.2 : 0.4;
+		const edu = price * (eduRate / 100);
+		// 농특세: 85㎡ 초과만. 표준 0.2 / 8%중과 0.6 / 12%중과 1.0
+		const ruralRate = !large ? 0 : tier === 'std' ? 0.2 : tier === 'mid' ? 0.6 : 1.0;
+		const rural = price * (ruralRate / 100);
+
+		(document.getElementById('r-total') as HTMLElement).textContent =
+			'총 납부세액 약 ' + won(acq + edu + rural);
+		(document.getElementById('r-rate') as HTMLElement).textContent = rate + '%';
+		(document.getElementById('r-acq') as HTMLElement).textContent = won(acq);
+		(document.getElementById('r-edu') as HTMLElement).textContent = won(edu) + ` (${eduRate.toFixed(2)}%)`;
+		(document.getElementById('r-rural') as HTMLElement).textContent =
+			ruralRate === 0 ? '면제 (85㎡ 이하)' : won(rural) + ` (${ruralRate}%)`;
+		(document.getElementById('result') as HTMLElement).hidden = false;
+	});
+</script>

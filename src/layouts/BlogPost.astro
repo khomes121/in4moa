@@ -2,17 +2,44 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
+import AdSlot from '../components/AdSlot.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-import { CATEGORIES } from '../consts';
+import { CALCULATORS, CATEGORIES } from '../consts';
 
-type Props = CollectionEntry<'blog'>['data'] & { wordCount?: number };
+interface RelatedPost {
+	id: string;
+	title: string;
+	description: string;
+	category: string;
+	pubDate: Date;
+}
 
-const { title, description, pubDate, updatedDate, heroImage, category, tags, wordCount } =
+type Props = CollectionEntry<'blog'>['data'] & {
+	wordCount?: number;
+	related?: RelatedPost[];
+};
+
+const { title, description, pubDate, updatedDate, heroImage, category, tags, wordCount, related } =
 	Astro.props;
 const cat = CATEGORIES.find((c) => c.slug === category);
 const readingMinutes = wordCount ? Math.max(1, Math.round(wordCount / 350)) : null;
+
+// 카테고리별 추천 계산기 (내부링크·체류시간 강화)
+const CALC_BY_CAT: Record<string, string[]> = {
+	realestate: ['acquisition-tax', 'brokerage-fee', 'subscription-score'],
+	tax: ['acquisition-tax', 'brokerage-fee'],
+	loan: ['dsr', 'jeonse-conversion'],
+	subsidy: ['dsr', 'subscription-score'],
+	business: ['brokerage-fee', 'dsr'],
+	calculator: ['acquisition-tax', 'dsr', 'brokerage-fee'],
+	news: ['acquisition-tax', 'dsr'],
+};
+const promoCalcs = (CALC_BY_CAT[category ?? 'news'] ?? [])
+	.map((slug) => CALCULATORS.find((c) => c.slug === slug))
+	.filter(Boolean)
+	.slice(0, 3);
 ---
 
 <html lang="ko">
@@ -80,7 +107,57 @@ const readingMinutes = wordCount ? Math.max(1, Math.round(wordCount / 350)) : nu
 						</div>
 					</header>
 					<slot />
+
+					{
+						promoCalcs.length > 0 && (
+							<aside class="calc-promo" aria-label="관련 계산기">
+								<p class="calc-promo-title">🧮 이 글과 관련된 계산기</p>
+								<ul class="calc-cross">
+									{promoCalcs.map((c) => (
+										<li>
+											<a href={`/calculator/${c!.slug}/`}>
+												<span class="name">
+													{c!.emoji} {c!.name}
+												</span>
+												{c!.short}
+											</a>
+										</li>
+									))}
+								</ul>
+							</aside>
+						)
+					}
 				</div>
+
+				<AdSlot />
+
+				{
+					related && related.length > 0 && (
+						<section class="related" aria-labelledby="related-heading">
+							<h2 id="related-heading">함께 보면 좋은 글</h2>
+							<ul class="related-grid">
+								{related.map((r) => {
+									const rcat = CATEGORIES.find((c) => c.slug === r.category);
+									return (
+										<li>
+											<a href={`/blog/${r.id}/`}>
+												<p class="related-meta">
+													{rcat && (
+														<span class="related-cat">
+															<span aria-hidden="true">{rcat.emoji}</span> {rcat.label}
+														</span>
+													)}
+													<FormattedDate date={r.pubDate} />
+												</p>
+												<p class="related-title">{r.title}</p>
+											</a>
+										</li>
+									);
+								})}
+							</ul>
+						</section>
+					)
+				}
 			</article>
 		</main>
 		<Footer />
@@ -147,5 +224,71 @@ const readingMinutes = wordCount ? Math.max(1, Math.round(wordCount / 350)) : nu
 	.tag {
 		color: var(--text-link);
 		font-weight: var(--weight-medium);
+	}
+	.calc-promo {
+		margin-top: var(--space-7);
+		padding-top: var(--space-5);
+		border-top: 1px solid var(--border-default);
+	}
+	.calc-promo-title {
+		font-weight: var(--weight-bold);
+		color: var(--text-heading);
+		margin: 0;
+	}
+	.related {
+		max-width: var(--content-prose);
+		margin: var(--space-7) auto 0;
+	}
+	.related h2 {
+		font-size: var(--text-2xl);
+		margin: 0 0 var(--space-4);
+	}
+	.related-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-3);
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	@media (max-width: 640px) {
+		.related-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+	.related-grid a {
+		display: block;
+		padding: var(--space-4);
+		background: var(--bg-card);
+		border: 1px solid var(--border-default);
+		border-radius: var(--radius-md);
+		text-decoration: none;
+		color: inherit;
+		height: 100%;
+	}
+	.related-grid a:hover {
+		border-color: var(--color-primary-300);
+		box-shadow: var(--shadow-md);
+		text-decoration: none;
+	}
+	.related-meta {
+		display: flex;
+		gap: var(--space-2);
+		font-size: var(--text-xs);
+		color: var(--text-meta);
+		margin: 0 0 var(--space-2);
+		align-items: center;
+		flex-wrap: wrap;
+	}
+	.related-cat {
+		color: var(--text-link);
+		font-weight: var(--weight-semibold);
+	}
+	.related-title {
+		margin: 0;
+		font-weight: var(--weight-semibold);
+		color: var(--text-heading);
+		line-height: var(--leading-snug);
+		font-size: var(--text-base);
 	}
 </style>

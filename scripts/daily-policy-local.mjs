@@ -28,6 +28,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const BLOG = join(ROOT, 'src', 'content', 'blog');
 const PUBLISHED = join(__dirname, 'published-links.json');
+const EVERGREEN = join(__dirname, 'evergreen-topics.json');
 const LOGS = join(ROOT, 'logs');
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -249,7 +250,16 @@ ${REFERENCE}
 # 작성 원칙
 - 4건 자료 모두 한 글에 담지 말 것. 가장 일반 독자에게 의미 큰 1-3건 선별
 - 같은 주제 묶음이면 통합 흐름. 다양한 주제면 핵심 1건 + 보조 1-2건
-- 출처는 본문에 [텍스트](URL) 자연스럽게 삽입 + 끝 푸터에 정리`;
+- 출처는 본문에 [텍스트](URL) 자연스럽게 삽입 + 끝 푸터에 정리
+
+# 내부 링크 (체류시간·SEO — 글마다 1-2개 자연스럽게)
+글 내용과 관련 있을 때만, 본문 흐름 속에 마크다운 링크로 삽입:
+- 취득세·매수 비용 언급 시 → [취득세 계산기](/calculator/acquisition-tax/)
+- 중개수수료·복비 언급 시 → [중개보수 계산기](/calculator/brokerage-fee/)
+- 대출·한도·DSR 언급 시 → [DSR 계산기](/calculator/dsr/)
+- 청약·가점 언급 시 → [청약 가점 계산기](/calculator/subscription-score/)
+- 전세·월세 전환 언급 시 → [전월세 전환 계산기](/calculator/jeonse-conversion/)
+관련 없는 글에 억지로 넣지 말 것.`;
 
 async function callClaudeCLI(prompt, timeout = 180000) {
   return new Promise((resolve, reject) => {
@@ -297,6 +307,67 @@ ${itemsText}
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 에버그린 (상시 검색 수요) 글 — 큐에서 1개씩 소진
+
+function buildEvergreenPrompt(topic, pubDate) {
+  return `${SYSTEM_PROMPT_BASE}
+
+# 이번 글: 에버그린 (뉴스 아님 — 상시 검색 수요용 기둥 글)
+
+- 카테고리: \`${topic.category}\`
+- pubDate (정확히 이 값을 frontmatter에): ${pubDate}
+- 제목은 다음을 기반으로 검색 의도에 맞게 다듬어 사용: "${topic.title}"
+
+# 다룰 내용 (사실관계 앵커 — 이 범위를 벗어난 구체 수치 창작 금지)
+
+${topic.focus}
+
+# 에버그린 글 추가 원칙 (뉴스 글과 다른 점)
+
+- 분량 1500자 이상. ## 섹션 4-6개 + 표 1개 이상 + 자주 묻는 질문(### Q 형식) 2-3개
+- 제도 수치(금액·요율·한도)가 자주 바뀌는 항목은 정확한 숫자 단정 대신
+  "글 작성 시점 기준이며 최신 기준은 [공식 사이트]에서 확인" 패턴 사용
+- 출처 링크는 정부 공식 사이트만: 홈택스(hometax.go.kr), 정부24(gov.kr), 복지로(bokjiro.go.kr),
+  위택스(wetax.go.kr), 청약홈(applyhome.co.kr), 주택도시기금(nhuf.molit.go.kr),
+  인터넷등기소(iros.go.kr), 워크넷(work24.go.kr), 소상공인시장진흥공단(semas.or.kr) 등
+  실재가 확실한 도메인만. 존재가 불확실한 세부 URL 경로는 만들지 말고 도메인 루트만 링크
+- 마지막 섹션 전에 "행동 체크리스트" (체크박스 또는 번호 목록 5개 내외)
+${topic.calc ? `- 본문에서 [관련 계산기](/calculator/${topic.calc}/) 를 2회 이상 자연스럽게 링크` : ''}
+
+# 출력
+
+시그니처 구조 그대로 순수 markdown 출력. 코드블록·서두·설명 없이 \`---\` 부터 바로 시작.`;
+}
+
+async function publishEvergreen(pubDate) {
+  if (!existsSync(EVERGREEN)) return null;
+  let data;
+  try { data = JSON.parse(readFileSync(EVERGREEN, 'utf-8')); }
+  catch (e) { console.log('     ✗ evergreen-topics.json 파싱 실패:', e.message); return null; }
+
+  const topic = (data.topics || []).find(t => !t.done);
+  if (!topic) { console.log('     큐 소진 — 에버그린 주제 없음'); return null; }
+
+  let content = await callClaudeCLI(buildEvergreenPrompt(topic, pubDate), 240000);
+  content = sanitizeMarkdown(content);
+  content = content.replace(/^pubDate:\s*[^\n]+/m, `pubDate: ${pubDate}`);
+
+  let slug = topic.slug;
+  for (let suffix = 'a'.charCodeAt(0); existsSync(join(BLOG, `${slug}.md`)); suffix++) {
+    slug = `${topic.slug}-${String.fromCharCode(suffix)}`;
+  }
+  writeFileSync(join(BLOG, `${slug}.md`), content, 'utf-8');
+
+  topic.done = true;
+  topic.publishedAt = new Date().toISOString().slice(0, 10);
+  topic.publishedSlug = slug;
+  writeFileSync(EVERGREEN, JSON.stringify(data, null, 2) + '\n', 'utf-8');
+
+  const titleMatch = content.match(/^title:\s*['"]?(.+?)['"]?\s*$/m);
+  return { slug, cat: topic.category, title: titleMatch?.[1] || topic.title };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 function runGit(...args) {
   return execSync(`git ${args.map(a => a.includes(' ') ? `"${a}"` : a).join(' ')}`, {
     cwd: ROOT, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'],
@@ -305,7 +376,7 @@ function runGit(...args) {
 
 function gitCommitAndPush(count, date) {
   try {
-    runGit('add', 'src/content/blog/', 'scripts/published-links.json');
+    runGit('add', 'src/content/blog/', 'scripts/published-links.json', 'scripts/evergreen-topics.json');
   } catch (e) {
     console.log('git add 실패:', e.message);
     return false;
@@ -337,11 +408,11 @@ async function main() {
 
   saveStatus({ phase: 'started', success: 0 });
 
-  console.log('[1/7] RSS 14개 수집');
+  console.log('[1/8] RSS 14개 수집');
   const all = await fetchAllRSS();
   console.log(`     ${all.length}건 (7일 이내)`);
 
-  console.log('[2/7] 기발행 link 제외');
+  console.log('[2/8] 기발행 link 제외');
   const published = loadPublished();
   const unpublished = all.filter(x => !published.has(x.link));
   console.log(`     미발행 ${unpublished.length}건 (기발행 ${published.size}건)`);
@@ -352,14 +423,14 @@ async function main() {
     process.exit(0);
   }
 
-  console.log('[3/7] 카테고리 분배');
+  console.log('[3/8] 카테고리 분배');
   const picks = distribute(unpublished, 5);
   picks.forEach((p, i) => console.log(`     ${i + 1}. ${p.cat} (${p.items.length}건)`));
 
-  console.log('[4/7] pubDate 자연 분산');
+  console.log('[4/8] pubDate 자연 분산');
   const pubDates = distributePubDates(picks.length);
 
-  console.log('[5/7] Claude Code CLI 호출');
+  console.log('[5/8] Claude Code CLI 호출');
   const today = new Date().toISOString().slice(0, 10);
   let success = 0;
   const failures = [];
@@ -388,10 +459,25 @@ async function main() {
     }
   }
 
-  console.log('[6/7] published-links.json 갱신');
+  console.log('[6/8] 에버그린 1편 발행 (큐)');
+  try {
+    const everDate = (() => { const d = new Date(); d.setHours(9 - 9, 30, 0, 0); return d.toISOString(); })(); // KST 09:30
+    const ever = await publishEvergreen(everDate);
+    if (ever) {
+      console.log(`     ✓ ${ever.slug}.md`);
+      console.log(`        ${ever.title.slice(0, 60)}`);
+      success++;
+      results.push(ever);
+    }
+  } catch (e) {
+    console.log(`     ✗ 에버그린 실패: ${e.message.slice(0, 100)}`);
+    failures.push({ index: 'evergreen', cat: 'evergreen', error: e.message.slice(0, 200) });
+  }
+
+  console.log('[7/8] published-links.json 갱신');
   savePublished(published);
 
-  console.log('[7/7] git commit + push');
+  console.log('[8/8] git commit + push');
   let pushed = false;
   if (success > 0) {
     pushed = gitCommitAndPush(success, today);

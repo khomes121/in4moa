@@ -1,0 +1,45 @@
+---
+// 애드센스 광고 슬롯. consts.ts 의 ADSENSE_CLIENT 가 비어 있으면 아무것도 렌더하지 않는다.
+// 승인 후: ADSENSE_CLIENT 설정 + 각 배치 위치의 slot 번호를 props 로 전달.
+// slot 을 생략하면 자동 광고 형식(반응형 디스플레이)으로 출력.
+import { ADSENSE_CLIENT } from '../consts';
+
+interface Props {
+	slot?: string;
+	format?: string;
+	label?: boolean;
+}
+
+const { slot, format = 'auto', label = true } = Astro.props;
+---
+
+{
+	ADSENSE_CLIENT && (
+		<div class="ad-slot">
+			{label && <span class="ad-label">광고</span>}
+			<ins
+				class="adsbygoogle"
+				style="display:block"
+				data-ad-client={ADSENSE_CLIENT}
+				data-ad-slot={slot}
+				data-ad-format={format}
+				data-full-width-responsive="true"
+			/>
+			<script is:inline>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+		</div>
+	)
+}
+
+<style>
+	.ad-slot {
+		margin: var(--space-6) auto;
+		max-width: var(--content-prose);
+		text-align: center;
+	}
+	.ad-label {
+		display: block;
+		font-size: var(--text-xs);
+		color: var(--text-meta);
+		margin-bottom: var(--space-1);
+	}
+</style>

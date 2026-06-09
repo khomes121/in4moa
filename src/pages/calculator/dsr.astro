@@ -1,0 +1,191 @@
+---
+import CalcPage from '../../layouts/CalcPage.astro';
+---
+
+<CalcPage
+	slug="dsr"
+	title="DSR·대출 원리금 계산기 — 내 한도 가늠하기"
+	description="연소득과 대출 조건을 넣으면 월 상환액과 DSR 비율을 계산합니다. 스트레스 금리 가산 시뮬레이션, 원리금균등·원금균등·만기일시 상환 방식 지원."
+	baseDate="2026-06-10"
+>
+	<div slot="calculator" class="calc-card">
+		<form id="calc-form" class="calc-grid" autocomplete="off">
+			<div class="calc-field">
+				<label for="income">연소득 (만원)</label>
+				<input type="number" id="income" inputmode="numeric" min="0" step="100" placeholder="예: 6000" required />
+			</div>
+			<div class="calc-field">
+				<label for="existing">기존 대출 연간 원리금 (만원)</label>
+				<input type="number" id="existing" inputmode="numeric" min="0" step="10" placeholder="없으면 0" value="0" />
+				<span class="hint">기존 대출의 1년치 원금+이자 합계</span>
+			</div>
+			<div class="calc-field">
+				<label for="principal">신규 대출금 (만원)</label>
+				<input type="number" id="principal" inputmode="numeric" min="0" step="100" placeholder="예: 30000 (3억 원)" required />
+			</div>
+			<div class="calc-field">
+				<label for="rate">금리 (연 %)</label>
+				<input type="number" id="rate" inputmode="decimal" min="0" step="0.01" placeholder="예: 4.2" required />
+			</div>
+			<div class="calc-field">
+				<label for="stress">스트레스 가산금리 (%p)</label>
+				<input type="number" id="stress" inputmode="decimal" min="0" step="0.01" value="0" />
+				<span class="hint">변동금리 대출은 한도 산정 시 가산금리가 더해집니다</span>
+			</div>
+			<div class="calc-field">
+				<label for="years">만기 (년)</label>
+				<input type="number" id="years" inputmode="numeric" min="1" max="50" step="1" placeholder="예: 40" required />
+			</div>
+			<div class="calc-field">
+				<label for="method">상환 방식</label>
+				<select id="method">
+					<option value="annuity">원리금균등 (매달 같은 금액)</option>
+					<option value="linear">원금균등 (첫 달 최대, 점점 감소)</option>
+					<option value="bullet">만기일시 (이자만 내다 만기 상환)</option>
+				</select>
+			</div>
+			<div class="calc-actions calc-field">
+				<button type="submit" class="btn btn-primary">계산하기</button>
+			</div>
+		</form>
+
+		<div id="result" class="calc-result" hidden>
+			<p class="calc-result-main" id="r-dsr"></p>
+			<table>
+				<tbody>
+					<tr><td>월 상환액 (첫 달 기준)</td><td id="r-monthly"></td></tr>
+					<tr><td>신규 대출 연간 원리금</td><td id="r-annual"></td></tr>
+					<tr><td>기존 + 신규 연간 원리금 합계</td><td id="r-total"></td></tr>
+					<tr><td>총 이자 (만기까지)</td><td id="r-interest"></td></tr>
+				</tbody>
+			</table>
+			<p class="calc-note" id="r-verdict"></p>
+		</div>
+	</div>
+
+	<Fragment slot="content">
+		<h2>DSR이란 — 대출 한도를 정하는 핵심 지표</h2>
+		<p>
+			DSR(총부채원리금상환비율)은 <strong>연소득 대비 모든 대출의 연간 원리금 상환액
+			비율</strong>입니다. 은행권은 DSR 40%, 제2금융권은 50%를 기준으로 대출 한도를 제한하는 것이
+			일반적입니다.
+		</p>
+		<blockquote>
+			<p>DSR(%) = (모든 대출의 연간 원리금 상환액 ÷ 연소득) × 100</p>
+		</blockquote>
+
+		<h2>스트레스 DSR — 변동금리면 한도가 더 줄어든다</h2>
+		<p>
+			변동·혼합형 금리 대출은 금리 상승 가능성을 반영해 <strong>실제 금리에 가산금리(스트레스
+			금리)를 더해</strong> DSR을 계산합니다. 실제 이자는 그대로지만 <strong>한도 계산에서만 더
+			보수적으로</strong> 잡히는 구조입니다. 가산 폭은 단계적으로 확대 시행 중이므로, 위 계산기의
+			"스트레스 가산금리" 칸에 현재 적용되는 수치를 넣어 시뮬레이션해 보세요.
+		</p>
+
+		<h2>상환 방식별 차이</h2>
+		<table>
+			<thead>
+				<tr><th>방식</th><th>특징</th><th>유리한 경우</th></tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>원리금균등</td>
+					<td>매달 같은 금액. 초반엔 이자 비중 높음</td>
+					<td>월 지출을 일정하게 관리하고 싶을 때</td>
+				</tr>
+				<tr>
+					<td>원금균등</td>
+					<td>첫 달이 가장 크고 점점 감소. 총이자 최소</td>
+					<td>초기 상환 여력이 있고 총이자를 아끼고 싶을 때</td>
+				</tr>
+				<tr>
+					<td>만기일시</td>
+					<td>이자만 내다 만기에 원금 전액. DSR 계산엔 불리</td>
+					<td>전세대출 등 단기 자금</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h2>자주 묻는 질문</h2>
+		<h3>DSR에 안 잡히는 대출도 있나요?</h3>
+		<p>
+			전세자금대출(보증부)·중도금대출·소액 서민금융상품 등 일부는 DSR 산정에서 제외되거나 이자만
+			반영되는 경우가 있습니다. 규제는 수시로 바뀌므로 실행 시점에 은행에서 확인하세요.
+		</p>
+		<h3>부부 합산 소득으로 계산되나요?</h3>
+		<p>
+			공동명의·부부 합산 신청 시 소득과 부채를 합산해 산정할 수 있습니다. 합산하면 소득이 늘지만
+			배우자의 기존 대출도 함께 잡힌다는 점을 주의하세요.
+		</p>
+
+		<h2>관련 정보</h2>
+		<ul>
+			<li><a href="/category/loan/">💳 대출·금융 카테고리 글 모음</a></li>
+			<li><a href="/calculator/acquisition-tax/">🏠 취득세 계산기 — 매수 비용 같이 계산하기</a></li>
+			<li><a href="/calculator/jeonse-conversion/">🔄 전월세 전환 계산기</a></li>
+		</ul>
+	</Fragment>
+</CalcPage>
+
+<script>
+	const won = (v: number) => Math.round(v).toLocaleString('ko-KR') + '원';
+
+	(document.getElementById('calc-form') as HTMLFormElement).addEventListener('submit', (e) => {
+		e.preventDefault();
+		const income = Number((document.getElementById('income') as HTMLInputElement).value) * 10000;
+		const existing = Number((document.getElementById('existing') as HTMLInputElement).value) * 10000;
+		const principal = Number((document.getElementById('principal') as HTMLInputElement).value) * 10000;
+		const baseRate = Number((document.getElementById('rate') as HTMLInputElement).value);
+		const stress = Number((document.getElementById('stress') as HTMLInputElement).value) || 0;
+		const years = Number((document.getElementById('years') as HTMLInputElement).value);
+		const method = (document.getElementById('method') as HTMLSelectElement).value;
+		if (!income || !principal || !baseRate || !years) return;
+
+		const n = years * 12;
+
+		// 실제 상환액 (실제 금리 기준)
+		function annualPayment(ratePct: number): { monthly: number; annual: number; totalInterest: number } {
+			const r = ratePct / 100 / 12;
+			if (method === 'annuity') {
+				const m = r === 0 ? principal / n : (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+				return { monthly: m, annual: m * 12, totalInterest: m * n - principal };
+			}
+			if (method === 'linear') {
+				// 첫 달 상환액, 연간은 첫 12개월 합계
+				const pm = principal / n;
+				let firstYear = 0;
+				for (let i = 0; i < Math.min(12, n); i++) firstYear += pm + (principal - pm * i) * r;
+				const totalInterest = ((n + 1) / 2) * principal * r;
+				return { monthly: pm + principal * r, annual: firstYear, totalInterest };
+			}
+			// bullet: 이자만 + DSR 관행상 원금은 만기로 분할 산입되나 간이 계산은 이자 + 원금/만기
+			const interestM = principal * r;
+			return {
+				monthly: interestM,
+				annual: interestM * 12 + principal / years,
+				totalInterest: interestM * n,
+			};
+		}
+
+		const real = annualPayment(baseRate);
+		const stressed = stress > 0 ? annualPayment(baseRate + stress) : real;
+
+		const annualNew = stressed.annual; // DSR 은 스트레스 금리 기준
+		const totalAnnual = annualNew + existing;
+		const dsr = (totalAnnual / income) * 100;
+
+		(document.getElementById('r-dsr') as HTMLElement).textContent = 'DSR 약 ' + dsr.toFixed(1) + '%';
+		(document.getElementById('r-monthly') as HTMLElement).textContent =
+			won(real.monthly) + (method === 'bullet' ? ' (이자만)' : '');
+		(document.getElementById('r-annual') as HTMLElement).textContent =
+			won(annualNew) + (stress > 0 ? ` (스트레스 ${(baseRate + stress).toFixed(2)}% 기준)` : '');
+		(document.getElementById('r-total') as HTMLElement).textContent = won(totalAnnual);
+		(document.getElementById('r-interest') as HTMLElement).textContent = won(real.totalInterest);
+
+		const verdict = document.getElementById('r-verdict') as HTMLElement;
+		if (dsr <= 40) verdict.textContent = `은행권 기준(40%) 이내입니다. 여유: ${(40 - dsr).toFixed(1)}%p`;
+		else if (dsr <= 50) verdict.textContent = '은행권 기준(40%)을 초과합니다. 제2금융권 기준(50%) 이내.';
+		else verdict.textContent = 'DSR 50%를 초과합니다. 대출금 축소 또는 만기 연장 검토가 필요합니다.';
+		(document.getElementById('result') as HTMLElement).hidden = false;
+	});
+</script>

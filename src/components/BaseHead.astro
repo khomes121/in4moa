@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, ADSENSE_CLIENT, GA_MEASUREMENT_ID } from '../consts';
 import type { CollectionEntry } from 'astro:content';
 
 interface ArticleProps {
@@ -24,7 +24,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const {
 	title,
 	description,
-	image = '/og-default.svg',
+	image = '/og-default.png',
 	article,
 	type = 'website',
 	noindex = false,
@@ -176,3 +176,27 @@ const articleLd =
 <!-- Structured Data -->
 <script type="application/ld+json" set:html={JSON.stringify(baseLd)} />
 {articleLd && <script type="application/ld+json" set:html={JSON.stringify(articleLd)} />}
+
+<!-- Google AdSense (consts.ts 의 ADSENSE_CLIENT 설정 시에만 출력) -->
+{
+	ADSENSE_CLIENT && (
+		<script
+			async
+			src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+			crossorigin="anonymous"
+		/>
+	)
+}
+
+<!-- Google Analytics 4 (consts.ts 의 GA_MEASUREMENT_ID 설정 시에만 출력) -->
+{
+	GA_MEASUREMENT_ID && (
+		<>
+			<script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
+			<script
+				is:inline
+				set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_MEASUREMENT_ID}');`}
+			/>
+		</>
+	)
+}

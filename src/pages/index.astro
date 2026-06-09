@@ -3,7 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { CALCULATORS, CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import { getCollection } from 'astro:content';
 
 const allPosts = (await getCollection('blog')).sort(
@@ -46,6 +46,22 @@ for (const p of allPosts) {
 					</div>
 					<p class="hero-meta">📌 매주 업데이트 · 출처 100% 명시 · 광고 최소</p>
 				</div>
+			</section>
+
+			<section class="calc-section container" aria-labelledby="calc-heading">
+				<h2 id="calc-heading" class="section-title">🧮 바로 쓰는 계산기</h2>
+				<p class="section-desc">취득세·복비·DSR·청약가점 — 입력값은 브라우저 안에서만 계산됩니다.</p>
+				<ul class="calc-strip">
+					{
+						CALCULATORS.map((c) => (
+							<li>
+								<a href={`/calculator/${c.slug}/`}>
+									<span aria-hidden="true">{c.emoji}</span> {c.name}
+								</a>
+							</li>
+						))
+					}
+				</ul>
 			</section>
 
 			<section class="category-section container" aria-labelledby="cat-heading">
@@ -169,6 +185,38 @@ for (const p of allPosts) {
 				color: var(--text-meta);
 				font-size: var(--text-sm);
 				margin: 0;
+			}
+
+			.calc-section {
+				padding: var(--space-7) var(--space-4) 0;
+			}
+			.calc-strip {
+				display: flex;
+				gap: var(--space-3);
+				flex-wrap: wrap;
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+			.calc-strip a {
+				display: inline-flex;
+				align-items: center;
+				gap: var(--space-2);
+				padding: var(--space-3) var(--space-4);
+				background: var(--bg-card);
+				border: 1px solid var(--border-default);
+				border-radius: var(--radius-full);
+				text-decoration: none;
+				color: var(--text-heading);
+				font-weight: var(--weight-semibold);
+				font-size: var(--text-sm);
+				transition: all var(--duration-fast) var(--ease-out);
+			}
+			.calc-strip a:hover {
+				border-color: var(--color-primary-300);
+				color: var(--text-link);
+				box-shadow: var(--shadow-md);
+				text-decoration: none;
 			}
 
 			.category-section {

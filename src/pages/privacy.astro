@@ -1,0 +1,101 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="ko">
+	<head>
+		<BaseHead
+			title={`개인정보처리방침 · ${SITE_TITLE}`}
+			description="인포모아 개인정보처리방침 — 쿠키·광고·분석 도구 사용 안내."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main id="main" class="container">
+			<article class="prose">
+				<h1>개인정보처리방침</h1>
+				<p class="caption">시행일: 2026-06-10</p>
+
+				<p>
+					인포모아(in4moa.store, 이하 "사이트")는 정적 웹사이트로, 회원가입·로그인 기능이 없으며
+					이용자의 개인정보를 직접 수집·저장하지 않습니다. 다만 아래와 같이 제3자 서비스가
+					쿠키를 통해 일부 정보를 자동 수집할 수 있습니다.
+				</p>
+
+				<h2>1. 직접 수집하는 개인정보</h2>
+				<p>
+					없습니다. 사이트는 입력 폼·계정 시스템·댓글 서버를 운영하지 않습니다. 계산기에 입력한
+					값은 <strong>이용자의 브라우저 안에서만 계산</strong>되며 사이트 서버로 전송되지
+					않습니다.
+				</p>
+
+				<h2>2. 광고 서비스 (Google AdSense)</h2>
+				<p>
+					사이트는 Google AdSense 광고를 게재할 수 있습니다. Google 을 포함한 제3자 광고
+					사업자는 쿠키를 사용하여 이용자의 이전 방문 기록을 기반으로 광고를 표시합니다.
+				</p>
+				<ul>
+					<li>
+						Google 의 광고 쿠키 사용으로 Google 과 그 파트너는 이용자의 본 사이트 및 다른
+						사이트 방문 기록을 바탕으로 맞춤 광고를 제공할 수 있습니다.
+					</li>
+					<li>
+						이용자는 <a href="https://adssettings.google.com" rel="noopener" target="_blank">Google 광고 설정</a>에서
+						맞춤 광고를 비활성화할 수 있습니다.
+					</li>
+					<li>
+						자세한 내용은
+						<a href="https://policies.google.com/technologies/ads?hl=ko" rel="noopener" target="_blank">Google 광고 — 정책 및 약관</a>을
+						참고하세요.
+					</li>
+				</ul>
+
+				<h2>3. 분석 도구 (Google Analytics)</h2>
+				<p>
+					사이트는 방문 통계 파악을 위해 Google Analytics 를 사용할 수 있습니다. 수집되는 정보는
+					방문 페이지·체류 시간·브라우저 종류 등 비식별 통계 정보이며, 운영자는 이를 특정 개인을
+					식별하는 용도로 사용하지 않습니다.
+				</p>
+
+				<h2>4. 쿠키 관리</h2>
+				<p>
+					이용자는 브라우저 설정에서 쿠키 저장을 거부하거나 삭제할 수 있습니다. 쿠키를 차단해도
+					사이트의 모든 콘텐츠·계산기는 정상 이용 가능합니다.
+				</p>
+
+				<h2>5. 외부 링크</h2>
+				<p>
+					사이트의 글은 정부 보도자료·법령 등 외부 사이트로 연결되는 링크를 포함합니다. 외부
+					사이트의 개인정보 처리에 대해서는 해당 사이트의 방침이 적용됩니다.
+				</p>
+
+				<h2>6. 방침 변경</h2>
+				<p>
+					본 방침이 변경되는 경우 이 페이지에 시행일과 함께 갱신합니다.
+				</p>
+
+				<aside class="callout callout-info">
+					<p class="callout-title">문의</p>
+					<p>
+						개인정보 관련 문의·오류 신고는 <a href="/about">소개 페이지</a>에 안내된 경로로
+						연락해 주세요.
+					</p>
+				</aside>
+			</article>
+		</main>
+		<Footer />
+
+		<style>
+			main {
+				padding: var(--space-6) var(--space-4) var(--space-8);
+			}
+			.prose h2 {
+				margin-top: var(--space-7);
+			}
+		</style>
+	</body>
+</html>

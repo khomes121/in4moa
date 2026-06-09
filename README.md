@@ -66,16 +66,38 @@ heroImage: ./hero.jpg       # 옵션
 ## 사이트 구조
 
 ```
-/                       카테고리 카드 + 최근 글
+/                       카테고리 카드 + 계산기 스트립 + 최근 글
 /blog                   전체 글 목록
-/blog/[slug]            글 상세
+/blog/[slug]            글 상세 (관련 글 4편 + 카테고리별 계산기 추천 자동 삽입)
+/calculator             계산기 허브
+/calculator/[slug]      취득세·중개보수·DSR·청약가점·전월세전환 (5종, 순수 클라이언트 JS)
 /category/[slug]        카테고리별 글 목록 (7개)
 /policy-feed            정책브리핑 RSS 자동 분류 (빌드 시 fetch)
 /about                  소개·운영 원칙·면책
+/privacy                개인정보처리방침 (애드센스 필수 요건)
 /rss.xml                전체 RSS
 /sitemap-index.xml      사이트맵
 /robots.txt             크롤러 정책
 ```
+
+## 수익화 (애드센스)
+
+활성화 스위치는 `src/consts.ts` 한 곳:
+
+| 상수 | 역할 |
+|---|---|
+| `ADSENSE_CLIENT` | `ca-pub-XXXX` 입력 시 전 페이지에 애드센스 스크립트 + 글 하단·계산기 광고 슬롯(`AdSlot.astro`) 자동 활성화. 빈 문자열 = 완전 비활성 |
+| `GA_MEASUREMENT_ID` | `G-XXXX` 입력 시 GA4 활성화 |
+
+승인 후 할 일: ① `ADSENSE_CLIENT` 입력 ② `public/ads.txt` 생성 (`google.com, pub-XXXX, DIRECT, f08c47fec0942fa0`) ③ 재배포.
+
+## 콘텐츠 자동 발행 (일 6편)
+
+- **뉴스 5편** — korea.kr RSS 14개 → 카테고리 분배 → Claude CLI 생성 (기존 파이프라인)
+- **에버그린 1편** — `scripts/evergreen-topics.json` 큐에서 1개씩 소진. 고단가 행동형 키워드(신청·조회·계산) 중심. 큐가 비면 주제를 보충할 것
+- 모든 글에 계산기 내부링크 자동 유도 (프롬프트 지시)
+- **스케줄**: Windows 작업 스케줄러 `Infomoa-DailyPublish` (매일 09:30, `run-daily-task.bat` → `logs/scheduler.log`)
+- 수동 실행: `run-daily.bat` 더블클릭
 
 ## 배포 (Cloudflare Pages)
 

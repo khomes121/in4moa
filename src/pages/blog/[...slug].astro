@@ -14,8 +14,23 @@ type Props = CollectionEntry<'blog'>;
 const post = Astro.props;
 const { Content } = await render(post);
 const wordCount = post.body?.length ?? 0;
+
+// 관련 글: 같은 카테고리 최신 4편 (자기 자신 제외), 부족하면 전체 최신으로 채움
+const all = (await getCollection('blog'))
+	.filter((p) => p.id !== post.id)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const sameCat = all.filter((p) => p.data.category === post.data.category);
+const related = [...sameCat, ...all.filter((p) => p.data.category !== post.data.category)]
+	.slice(0, 4)
+	.map((p) => ({
+		id: p.id,
+		title: p.data.title,
+		description: p.data.description,
+		category: p.data.category,
+		pubDate: p.data.pubDate,
+	}));
 ---
 
-<BlogPost {...post.data} wordCount={wordCount}>
+<BlogPost {...post.data} wordCount={wordCount} related={related}>
 	<Content />
 </BlogPost>
