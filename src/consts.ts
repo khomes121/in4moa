@@ -2,7 +2,9 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = '인포모아';
-export const SITE_DESCRIPTION = '부동산·세금·대출·정부지원금·창업까지 — 실생활에 바로 쓰는 정보 모음';
+export const SITE_DESCRIPTION =
+	'부동산·세금·대출·지원금 — 복잡한 돈 문제를 계산기와 가이드로 바로 풀어드립니다';
+export const SITE_TAGLINE = '돈 되는 생활정보';
 
 // ─── 수익화·측정 ───────────────────────────────────────────────
 // 애드센스 승인 후 발급받은 ca-pub-XXXXXXXXXXXXXXXX 를 넣으면
@@ -73,44 +75,44 @@ export const CATEGORIES: CategoryMeta[] = [
 	{
 		slug: 'realestate',
 		label: '부동산',
-		description: '청약·분양·매매·전월세·실거래',
+		description: '청약·분양·매매·전월세 — 시장이 바뀌면 가장 먼저',
 		emoji: '🏠',
 	},
 	{
 		slug: 'tax',
 		label: '세금',
-		description: '양도세·취득세·종부세·증여세',
+		description: '취득세·양도세·종부세·증여세 — 내야 할 돈 정확히',
 		emoji: '🧾',
 	},
 	{
 		slug: 'loan',
 		label: '대출·금융',
-		description: '디딤돌·보금자리·생활자금',
-		emoji: '💳',
+		description: '디딤돌·버팀목·DSR — 한도와 금리의 모든 것',
+		emoji: '🏦',
 	},
 	{
 		slug: 'subsidy',
-		label: '정부지원금',
-		description: '청년·신혼·소상공인·복지',
-		emoji: '🎁',
+		label: '지원금·복지',
+		description: '근로장려금·주거급여·청년 지원 — 놓치면 손해',
+		emoji: '💰',
+	},
+	{
+		slug: 'calculator',
+		label: '계산기·가이드',
+		description: '취득세·복비·DSR·청약가점 — 내 케이스로 직접 계산',
+		emoji: '🧮',
 	},
 	{
 		slug: 'business',
 		label: '창업·자영업',
-		description: '인허가·세무·임대차',
-		emoji: '🚀',
-	},
-	{
-		slug: 'calculator',
-		label: '계산기',
-		description: 'LTV·DTI·취득세·중개수수료·청약가점·임대수익률',
-		emoji: '🧮',
+		description: '사업자등록·부가세·정책자금 실무',
+		emoji: '🏪',
 	},
 	{
 		slug: 'news',
-		label: '뉴스·정책',
-		description: '시의성 있는 정책·시장 동향',
-		emoji: '📰',
+		label: '정책 뉴스',
+		description: '오늘 나온 정책이 내 생활에 미치는 영향',
+		emoji: '📌',
 	},
 ];
 

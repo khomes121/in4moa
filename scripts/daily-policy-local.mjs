@@ -96,8 +96,9 @@ const REFERENCE = readFileSync(
 const DEPT_CAT = {
   '통합': 'news', '기획재정부': 'tax', '국토교통부': 'realestate',
   '산업통상자원부': 'business', '교육부': 'subsidy', '여성가족부': 'subsidy',
-  '외교부': 'news', '과학기술정보통신부': 'business', '국세청': 'tax',
+  '과학기술정보통신부': 'news', '국세청': 'tax',
   '고용노동부': 'subsidy', '법무부': 'news', '행정안전부': 'news',
+  '중소벤처기업부': 'business',
 };
 
 const FEEDS = [
@@ -109,7 +110,7 @@ const FEEDS = [
   { name: '산업통상자원부', dept: '산업통상자원부', url: 'https://www.korea.kr/rss/dept_motie.xml' },
   { name: '교육부', dept: '교육부', url: 'https://www.korea.kr/rss/dept_moe.xml' },
   { name: '여성가족부', dept: '여성가족부', url: 'https://www.korea.kr/rss/dept_mogef.xml' },
-  { name: '외교부', dept: '외교부', url: 'https://www.korea.kr/rss/dept_mofa.xml' },
+  { name: '중소벤처기업부', dept: '중소벤처기업부', url: 'https://www.korea.kr/rss/dept_mss.xml' },
   { name: '과학기술정보통신부', dept: '과학기술정보통신부', url: 'https://www.korea.kr/rss/dept_msit.xml' },
   { name: '국세청', dept: '국세청', url: 'https://www.korea.kr/rss/dept_nts.xml' },
   { name: '고용노동부', dept: '고용노동부', url: 'https://www.korea.kr/rss/dept_moel.xml' },
@@ -186,6 +187,17 @@ function sanitizeMarkdown(raw) {
   if (fence) s = fence[1].trim();
   const fmStart = s.indexOf('---');
   if (fmStart > 0) s = s.slice(fmStart);
+  // tags 배열의 숫자형 토큰을 따옴표로 감싼다 (YAML 이 숫자로 파싱 → 스키마 위반, 2026-06-10 사고)
+  s = s.replace(/^tags:\s*\[([^\]]*)\]/m, (_, inner) => {
+    const fixed = inner
+      .split(',')
+      .map(t => {
+        const v = t.trim();
+        return /^\d+(\.\d+)?$/.test(v) ? `'${v}'` : v;
+      })
+      .join(', ');
+    return `tags: [${fixed}]`;
+  });
   return s.endsWith('\n') ? s : s + '\n';
 }
 
@@ -249,6 +261,8 @@ ${REFERENCE}
 
 # 작성 원칙
 - 4건 자료 모두 한 글에 담지 말 것. 가장 일반 독자에게 의미 큰 1-3건 선별
+- **선별 기준: 독자의 돈·집·일자리에 직접 영향 있는 것 우선.** 외교 의전·기관 인사·
+  기념행사·MOU 체결 같은 소재는 제외. 4건 모두 무관하면 그나마 실용적인 1건만 간결히
 - 같은 주제 묶음이면 통합 흐름. 다양한 주제면 핵심 1건 + 보조 1-2건
 - 출처는 본문에 [텍스트](URL) 자연스럽게 삽입 + 끝 푸터에 정리
 

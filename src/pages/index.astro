@@ -9,17 +9,11 @@ import { getCollection } from 'astro:content';
 const allPosts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
-const recentPosts = allPosts.slice(0, 8);
+const recentPosts = allPosts.slice(0, 10);
+const guidePosts = allPosts.filter((p) => p.id.startsWith('evergreen-')).slice(0, 4);
 
-const counts: Record<string, { count: number; latest?: Date }> = {};
-for (const p of allPosts) {
-	const slug = p.data.category;
-	if (!counts[slug]) counts[slug] = { count: 0 };
-	counts[slug].count += 1;
-	if (!counts[slug].latest || p.data.pubDate > counts[slug].latest) {
-		counts[slug].latest = p.data.pubDate;
-	}
-}
+const counts: Record<string, number> = {};
+for (const p of allPosts) counts[p.data.category] = (counts[p.data.category] ?? 0) + 1;
 ---
 
 <!doctype html>
@@ -31,126 +25,161 @@ for (const p of allPosts) {
 		<Header />
 		<main id="main">
 			<section class="hero">
-				<div class="container hero-inner">
-					<p class="hero-eyebrow">한국 생활정보 종합 블로그</p>
-					<h1 class="hero-title">
-						복잡한 정보를 <span class="accent">한 줄로</span> 모아드립니다
-					</h1>
-					<p class="hero-lead">
-						부동산·세금·대출·정부지원금·창업·계산기·뉴스까지. 40~60대가 자주 찾는 정보를 공식
-						출처와 함께 알기 쉽게 정리합니다.
-					</p>
-					<div class="hero-cta">
-						<a href="/blog" class="btn btn-primary">최근 글 보기 →</a>
-						<a href="/policy-feed" class="btn btn-ghost">정책 피드 보기</a>
+				<div class="container hero-grid">
+					<div class="hero-copy">
+						<p class="hero-eyebrow">부동산 · 세금 · 대출 · 지원금</p>
+						<h1 class="hero-title">
+							복잡한 돈 문제,<br /><span class="accent">계산하고</span> 확인하세요
+						</h1>
+						<p class="hero-lead">
+							취득세부터 청약 가점까지 무료 계산기로 내 케이스를 바로 확인하고, 매일 갱신되는
+							정책 가이드로 놓치는 돈 없이 챙기세요. 모든 글은 공식 출처와 기준일을 명시합니다.
+						</p>
+						<div class="hero-cta">
+							<a href="/calculator/" class="btn btn-primary">🧮 계산기 바로가기</a>
+							<a href="/blog" class="btn btn-ghost">최근 글 보기</a>
+						</div>
+						<p class="hero-meta">매일 6편 업데이트 · 출처 100% 명시 · 입력값 서버 미전송</p>
 					</div>
-					<p class="hero-meta">📌 매주 업데이트 · 출처 100% 명시 · 광고 최소</p>
+
+					<div class="hero-tools" aria-label="인기 계산기">
+						<p class="tools-title">자주 쓰는 계산기</p>
+						<ul class="tools-list">
+							{
+								CALCULATORS.map((c) => (
+									<li>
+										<a href={`/calculator/${c.slug}/`}>
+											<span class="tool-emoji" aria-hidden="true">
+												{c.emoji}
+											</span>
+											<span class="tool-text">
+												<span class="tool-name">{c.name}</span>
+												<span class="tool-short">{c.short}</span>
+											</span>
+											<span class="tool-arrow" aria-hidden="true">
+												→
+											</span>
+										</a>
+									</li>
+								))
+							}
+						</ul>
+					</div>
 				</div>
 			</section>
 
-			<section class="calc-section container" aria-labelledby="calc-heading">
-				<h2 id="calc-heading" class="section-title">🧮 바로 쓰는 계산기</h2>
-				<p class="section-desc">취득세·복비·DSR·청약가점 — 입력값은 브라우저 안에서만 계산됩니다.</p>
-				<ul class="calc-strip">
+			<section class="recent-section container" aria-labelledby="recent-heading">
+				<div class="section-head">
+					<h2 id="recent-heading" class="section-title">최신 글</h2>
+					<a href="/blog" class="section-more">전체 글 →</a>
+				</div>
+				<ol class="news-list">
 					{
-						CALCULATORS.map((c) => (
+						recentPosts.map((post) => {
+							const cat = CATEGORIES.find((c) => c.slug === post.data.category);
+							return (
+								<li>
+									<a href={`/blog/${post.id}/`} class="news-row">
+										<span class="news-cat">
+											{cat ? `${cat.emoji} ${cat.label}` : post.data.category}
+										</span>
+										<span class="news-title">{post.data.title}</span>
+										<span class="news-date">
+											<FormattedDate date={post.data.pubDate} />
+										</span>
+									</a>
+								</li>
+							);
+						})
+					}
+				</ol>
+			</section>
+
+			{
+				guidePosts.length > 0 && (
+					<section class="guide-section container" aria-labelledby="guide-heading">
+						<div class="section-head">
+							<h2 id="guide-heading" class="section-title">
+								기본기 가이드
+							</h2>
+							<p class="section-sub">언제 읽어도 유효한 기둥 글</p>
+						</div>
+						<ul class="guide-grid">
+							{guidePosts.map((post) => {
+								const cat = CATEGORIES.find((c) => c.slug === post.data.category);
+								return (
+									<li>
+										<a href={`/blog/${post.id}/`}>
+											<p class="guide-meta">{cat ? `${cat.emoji} ${cat.label}` : ''}</p>
+											<h3 class="guide-title">{post.data.title}</h3>
+											<p class="guide-desc">{post.data.description}</p>
+										</a>
+									</li>
+								);
+							})}
+						</ul>
+					</section>
+				)
+			}
+
+			<section class="category-section container" aria-labelledby="cat-heading">
+				<div class="section-head">
+					<h2 id="cat-heading" class="section-title">주제별로 찾기</h2>
+				</div>
+				<ul class="category-grid">
+					{
+						CATEGORIES.map((c) => (
 							<li>
-								<a href={`/calculator/${c.slug}/`}>
-									<span aria-hidden="true">{c.emoji}</span> {c.name}
+								<a href={`/category/${c.slug}/`} class="cat-card">
+									<span class="cat-icon" aria-hidden="true">
+										{c.emoji}
+									</span>
+									<span class="cat-text">
+										<span class="cat-name">{c.label}</span>
+										<span class="cat-desc">{c.description}</span>
+									</span>
+									<span class="cat-count">{counts[c.slug] ?? 0}편</span>
 								</a>
 							</li>
 						))
 					}
 				</ul>
 			</section>
-
-			<section class="category-section container" aria-labelledby="cat-heading">
-				<h2 id="cat-heading" class="section-title">카테고리</h2>
-				<p class="section-desc">관심 주제를 골라 정보를 찾아보세요.</p>
-
-				<ul class="category-grid">
-					{
-						CATEGORIES.map((c) => {
-							const meta = counts[c.slug];
-							return (
-								<li class="cat-card">
-									<a href={`/category/${c.slug}/`}>
-										<span class="cat-icon" aria-hidden="true">
-											{c.emoji}
-										</span>
-										<h3 class="cat-name">{c.label}</h3>
-										<p class="cat-desc">{c.description}</p>
-										<p class="cat-meta">
-											<span>글 {meta?.count ?? 0}편</span>
-											{meta?.latest && (
-												<>
-													<span aria-hidden="true">·</span>
-													<span>최근 <FormattedDate date={meta.latest} /></span>
-												</>
-											)}
-										</p>
-										<span class="cat-arrow" aria-hidden="true">
-											→
-										</span>
-									</a>
-								</li>
-							);
-						})
-					}
-				</ul>
-			</section>
-
-			<section class="recent-section container" aria-labelledby="recent-heading">
-				<h2 id="recent-heading" class="section-title">최근 글</h2>
-				<p class="section-desc">새로 올라온 글을 한눈에.</p>
-
-				<ul class="recent-grid">
-					{
-						recentPosts.map((post) => {
-							const cat = CATEGORIES.find((c) => c.slug === post.data.category);
-							return (
-								<li class="post-card">
-									<a href={`/blog/${post.id}/`}>
-										<p class="post-card-meta">
-											{cat && (
-												<span class="post-card-cat">
-													<span aria-hidden="true">{cat.emoji}</span> {cat.label}
-												</span>
-											)}
-											<FormattedDate date={post.data.pubDate} />
-										</p>
-										<h3 class="post-card-title">{post.data.title}</h3>
-										<p class="post-card-desc">{post.data.description}</p>
-									</a>
-								</li>
-							);
-						})
-					}
-				</ul>
-
-				<div class="more-link">
-					<a href="/blog" class="btn btn-ghost">전체 글 보기 →</a>
-				</div>
-			</section>
 		</main>
 		<Footer />
 
 		<style>
+			/* ── Hero ───────────────────────────── */
 			.hero {
-				background: linear-gradient(180deg, var(--color-primary-50) 0%, var(--bg-page) 100%);
+				background:
+					radial-gradient(1200px 500px at 85% -10%, var(--color-primary-100) 0%, transparent 60%),
+					linear-gradient(180deg, var(--color-primary-50) 0%, var(--bg-page) 100%);
+				border-bottom: 1px solid var(--border-default);
 				padding: var(--space-8) 0 var(--space-7);
 			}
-			.hero-inner {
-				text-align: center;
-				max-width: 800px;
+			.hero-grid {
+				display: grid;
+				grid-template-columns: 1.1fr 0.9fr;
+				gap: var(--space-7);
+				align-items: center;
+			}
+			@media (max-width: 920px) {
+				.hero-grid {
+					grid-template-columns: 1fr;
+					gap: var(--space-6);
+				}
 			}
 			.hero-eyebrow {
+				display: inline-block;
 				font-size: var(--text-sm);
-				color: var(--text-link);
+				color: var(--color-primary-700);
+				background: var(--color-primary-50);
+				border: 1px solid var(--color-primary-200);
+				border-radius: var(--radius-full);
+				padding: 0.3em 1em;
 				font-weight: var(--weight-semibold);
 				letter-spacing: var(--tracking-wide);
-				margin: 0 0 var(--space-3);
-				text-transform: uppercase;
+				margin: 0 0 var(--space-4);
 			}
 			.hero-title {
 				font-size: var(--text-5xl);
@@ -165,21 +194,20 @@ for (const p of allPosts) {
 				}
 			}
 			.hero-title .accent {
-				color: var(--color-accent-500);
+				color: var(--color-primary-600);
 			}
 			.hero-lead {
 				font-size: var(--text-lg);
 				color: var(--text-body);
 				line-height: var(--leading-relaxed);
-				margin: 0 auto var(--space-5);
-				max-width: 640px;
+				margin: 0 0 var(--space-5);
+				max-width: 560px;
 			}
 			.hero-cta {
 				display: flex;
 				gap: var(--space-3);
-				justify-content: center;
 				flex-wrap: wrap;
-				margin-bottom: var(--space-5);
+				margin-bottom: var(--space-4);
 			}
 			.hero-meta {
 				color: var(--text-meta);
@@ -187,42 +215,163 @@ for (const p of allPosts) {
 				margin: 0;
 			}
 
-			.calc-section {
-				padding: var(--space-7) var(--space-4) 0;
+			.hero-tools {
+				background: var(--bg-card);
+				border: 1px solid var(--border-default);
+				border-radius: var(--radius-xl);
+				box-shadow: var(--shadow-lg);
+				padding: var(--space-5);
 			}
-			.calc-strip {
-				display: flex;
-				gap: var(--space-3);
-				flex-wrap: wrap;
+			.tools-title {
+				font-weight: var(--weight-bold);
+				color: var(--text-heading);
+				margin: 0 0 var(--space-3);
+				font-size: var(--text-base);
+			}
+			.tools-list {
 				list-style: none;
 				margin: 0;
 				padding: 0;
+				display: flex;
+				flex-direction: column;
 			}
-			.calc-strip a {
-				display: inline-flex;
+			.tools-list a {
+				display: flex;
 				align-items: center;
-				gap: var(--space-2);
-				padding: var(--space-3) var(--space-4);
-				background: var(--bg-card);
-				border: 1px solid var(--border-default);
-				border-radius: var(--radius-full);
+				gap: var(--space-3);
+				padding: var(--space-3) var(--space-2);
 				text-decoration: none;
-				color: var(--text-heading);
-				font-weight: var(--weight-semibold);
-				font-size: var(--text-sm);
-				transition: all var(--duration-fast) var(--ease-out);
+				color: inherit;
+				border-bottom: 1px solid var(--border-default);
+				border-radius: var(--radius-sm);
+				transition: background var(--duration-fast) var(--ease-out);
 			}
-			.calc-strip a:hover {
-				border-color: var(--color-primary-300);
-				color: var(--text-link);
-				box-shadow: var(--shadow-md);
+			.tools-list li:last-child a {
+				border-bottom: none;
+			}
+			.tools-list a:hover {
+				background: var(--color-primary-50);
+				text-decoration: none;
+			}
+			.tool-emoji {
+				font-size: 1.4rem;
+				flex: none;
+			}
+			.tool-text {
+				min-width: 0;
+			}
+			.tool-name {
+				display: block;
+				font-weight: var(--weight-semibold);
+				color: var(--text-heading);
+				font-size: var(--text-base);
+			}
+			.tool-short {
+				display: block;
+				color: var(--text-meta);
+				font-size: var(--text-xs);
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.tool-arrow {
+				margin-left: auto;
+				color: var(--color-primary-500);
+				font-weight: var(--weight-bold);
+			}
+
+			/* ── 공용 섹션 헤드 ─────────────────── */
+			.section-head {
+				display: flex;
+				align-items: baseline;
+				justify-content: space-between;
+				gap: var(--space-3);
+				margin-bottom: var(--space-4);
+				flex-wrap: wrap;
+			}
+			.section-head .section-title {
+				margin: 0;
+			}
+			.section-sub {
+				color: var(--text-meta);
+				font-size: var(--text-sm);
+				margin: 0;
+			}
+			.section-more {
+				font-size: var(--text-sm);
+				font-weight: var(--weight-semibold);
 				text-decoration: none;
 			}
 
-			.category-section {
-				padding: var(--space-7) var(--space-4);
+			/* ── 최신 글: 신문형 리스트 ──────────── */
+			.recent-section {
+				padding: var(--space-7) var(--space-4) 0;
 			}
-			.category-grid {
+			.news-list {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				background: var(--bg-card);
+				border: 1px solid var(--border-default);
+				border-radius: var(--radius-lg);
+				overflow: hidden;
+			}
+			.news-row {
+				display: grid;
+				grid-template-columns: 130px 1fr auto;
+				gap: var(--space-4);
+				align-items: center;
+				padding: var(--space-3) var(--space-5);
+				text-decoration: none;
+				color: inherit;
+				border-bottom: 1px solid var(--border-default);
+				transition: background var(--duration-fast) var(--ease-out);
+			}
+			.news-list li:last-child .news-row {
+				border-bottom: none;
+			}
+			.news-row:hover {
+				background: var(--color-primary-50);
+				text-decoration: none;
+			}
+			.news-cat {
+				font-size: var(--text-xs);
+				font-weight: var(--weight-semibold);
+				color: var(--color-primary-700);
+				white-space: nowrap;
+			}
+			.news-title {
+				font-weight: var(--weight-medium);
+				color: var(--text-heading);
+				line-height: var(--leading-snug);
+				overflow: hidden;
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+			}
+			.news-date {
+				font-size: var(--text-xs);
+				color: var(--text-meta);
+				white-space: nowrap;
+			}
+			@media (max-width: 640px) {
+				.news-row {
+					grid-template-columns: 1fr;
+					gap: var(--space-1);
+				}
+				.news-title {
+					-webkit-line-clamp: 2;
+				}
+				.news-date {
+					display: none;
+				}
+			}
+
+			/* ── 가이드 ─────────────────────────── */
+			.guide-section {
+				padding: var(--space-7) var(--space-4) 0;
+			}
+			.guide-grid {
 				display: grid;
 				grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 				gap: var(--space-4);
@@ -230,123 +379,113 @@ for (const p of allPosts) {
 				margin: 0;
 				padding: 0;
 			}
-			.cat-card a {
+			.guide-grid a {
 				display: block;
+				height: 100%;
 				padding: var(--space-5);
 				background: var(--bg-card);
 				border: 1px solid var(--border-default);
+				border-top: 3px solid var(--color-accent-400);
 				border-radius: var(--radius-lg);
 				text-decoration: none;
 				color: inherit;
 				transition: all var(--duration-base) var(--ease-out);
-				position: relative;
-				min-height: 180px;
-				height: 100%;
 			}
-			.cat-card a:hover {
+			.guide-grid a:hover {
 				transform: translateY(-3px);
 				box-shadow: var(--shadow-lg);
-				border-color: var(--color-primary-300);
 				text-decoration: none;
 			}
-			.cat-icon {
-				font-size: 2rem;
-				display: block;
-				line-height: 1;
-				margin-bottom: var(--space-3);
-			}
-			.cat-name {
-				font-size: var(--text-xl);
-				font-weight: var(--weight-bold);
-				margin: 0 0 var(--space-2);
-				color: var(--text-heading);
-			}
-			.cat-desc {
-				margin: 0 0 var(--space-3);
-				color: var(--text-body);
-				font-size: var(--text-sm);
-				line-height: var(--leading-normal);
-			}
-			.cat-meta {
-				display: flex;
-				gap: var(--space-2);
-				color: var(--text-meta);
+			.guide-meta {
 				font-size: var(--text-xs);
-				margin: 0;
-			}
-			.cat-arrow {
-				position: absolute;
-				right: var(--space-5);
-				bottom: var(--space-4);
-				color: var(--text-link);
-				font-weight: var(--weight-bold);
-				transition: transform var(--duration-fast) var(--ease-out);
-			}
-			.cat-card a:hover .cat-arrow {
-				transform: translateX(4px);
-			}
-
-			.recent-section {
-				padding: 0 var(--space-4) var(--space-8);
-			}
-			.recent-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-				gap: var(--space-4);
-				list-style: none;
-				margin: 0;
-				padding: 0;
-			}
-			.post-card a {
-				display: block;
-				padding: var(--space-4);
-				background: var(--bg-card);
-				border: 1px solid var(--border-default);
-				border-radius: var(--radius-lg);
-				text-decoration: none;
-				color: inherit;
-				transition: all var(--duration-base) var(--ease-out);
-				height: 100%;
-			}
-			.post-card a:hover {
-				border-color: var(--color-primary-300);
-				box-shadow: var(--shadow-md);
-				text-decoration: none;
-			}
-			.post-card-meta {
-				display: flex;
-				gap: var(--space-2);
-				font-size: var(--text-xs);
-				color: var(--text-meta);
-				margin: 0 0 var(--space-2);
-				flex-wrap: wrap;
-				align-items: center;
-			}
-			.post-card-cat {
-				color: var(--text-link);
+				color: var(--color-primary-700);
 				font-weight: var(--weight-semibold);
-			}
-			.post-card-title {
 				margin: 0 0 var(--space-2);
+			}
+			.guide-title {
 				font-size: var(--text-lg);
-				font-weight: var(--weight-semibold);
-				line-height: var(--leading-snug);
+				font-weight: var(--weight-bold);
 				color: var(--text-heading);
+				line-height: var(--leading-snug);
+				margin: 0 0 var(--space-2);
 			}
-			.post-card-desc {
+			.guide-desc {
 				margin: 0;
 				font-size: var(--text-sm);
 				color: var(--text-meta);
 				line-height: var(--leading-normal);
 				display: -webkit-box;
-				-webkit-line-clamp: 2;
+				-webkit-line-clamp: 3;
 				-webkit-box-orient: vertical;
 				overflow: hidden;
 			}
 
-			.more-link {
-				text-align: center;
-				margin-top: var(--space-6);
+			/* ── 카테고리 ───────────────────────── */
+			.category-section {
+				padding: var(--space-7) var(--space-4) var(--space-8);
+			}
+			.category-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+				gap: var(--space-3);
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+			.cat-card {
+				display: flex;
+				align-items: center;
+				gap: var(--space-3);
+				padding: var(--space-4) var(--space-5);
+				background: var(--bg-card);
+				border: 1px solid var(--border-default);
+				border-radius: var(--radius-lg);
+				text-decoration: none;
+				color: inherit;
+				transition: all var(--duration-base) var(--ease-out);
+				height: 100%;
+			}
+			.cat-card:hover {
+				border-color: var(--color-primary-300);
+				box-shadow: var(--shadow-md);
+				text-decoration: none;
+			}
+			.cat-icon {
+				font-size: 1.6rem;
+				flex: none;
+				width: 48px;
+				height: 48px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				background: var(--color-primary-50);
+				border-radius: var(--radius-md);
+			}
+			.cat-text {
+				min-width: 0;
+			}
+			.cat-name {
+				display: block;
+				font-weight: var(--weight-bold);
+				color: var(--text-heading);
+			}
+			.cat-desc {
+				display: block;
+				font-size: var(--text-xs);
+				color: var(--text-meta);
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.cat-count {
+				margin-left: auto;
+				font-size: var(--text-xs);
+				color: var(--color-primary-700);
+				background: var(--color-primary-50);
+				border-radius: var(--radius-full);
+				padding: 0.2em 0.8em;
+				font-weight: var(--weight-semibold);
+				white-space: nowrap;
 			}
 		</style>
 	</body>

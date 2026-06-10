@@ -1,45 +1,58 @@
 ---
-import { CATEGORIES, SITE_TITLE } from '../consts';
+import { CALCULATORS, CATEGORIES, SITE_TAGLINE, SITE_TITLE } from '../consts';
 const year = new Date().getFullYear();
-const cats = CATEGORIES;
-const left = cats.slice(0, 4);
-const right = cats.slice(4);
 ---
 
 <footer class="site-footer" role="contentinfo">
 	<div class="container footer-grid">
 		<div class="footer-brand">
-			<p class="brand-name">📚 {SITE_TITLE}</p>
+			<p class="brand-row">
+				<svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true" class="f-mark">
+					<rect width="64" height="64" rx="14" fill="#14724f"></rect>
+					<rect x="22" y="14" width="20" height="9" rx="4.5" fill="#e9a23b"></rect>
+					<rect x="17" y="27.5" width="30" height="9" rx="4.5" fill="#ffffff" opacity="0.72"
+					></rect>
+					<rect x="12" y="41" width="40" height="9" rx="4.5" fill="#ffffff"></rect>
+				</svg>
+				<span class="brand-name">{SITE_TITLE}</span>
+				<span class="brand-tag">{SITE_TAGLINE}</span>
+			</p>
 			<p class="brand-desc">
-				한국 생활정보 종합 블로그. 부동산·세금·금융·정부지원금·창업·계산기·뉴스를 한 곳에서.
+				부동산·세금·대출·지원금 — 복잡한 돈 문제를 계산기와 가이드로 풀어드립니다. 모든 글은
+				공식 출처와 기준일을 명시합니다.
 			</p>
 			<p class="brand-meta">운영: 부동산 분양영업 현직자</p>
 		</div>
 
-		<nav class="footer-nav" aria-label="콘텐츠">
-			<p class="nav-title">콘텐츠</p>
-			<a href="/blog">전체 글</a>
-			<a href="/policy-feed">정책 피드</a>
-			{left.map((c) => <a href={`/category/${c.slug}/`}>{`${c.emoji} ${c.label}`}</a>)}
+		<nav class="footer-nav" aria-label="계산기">
+			<p class="nav-title">계산기</p>
+			{
+				CALCULATORS.map((c) => (
+					<a href={`/calculator/${c.slug}/`}>{`${c.emoji} ${c.name}`}</a>
+				))
+			}
 		</nav>
 
 		<nav class="footer-nav" aria-label="카테고리">
 			<p class="nav-title">카테고리</p>
-			{right.map((c) => <a href={`/category/${c.slug}/`}>{`${c.emoji} ${c.label}`}</a>)}
+			{CATEGORIES.map((c) => <a href={`/category/${c.slug}/`}>{`${c.emoji} ${c.label}`}</a>)}
 		</nav>
 
-		<nav class="footer-nav" aria-label="구독·소개">
-			<p class="nav-title">구독·소개</p>
+		<nav class="footer-nav" aria-label="사이트">
+			<p class="nav-title">사이트</p>
+			<a href="/blog">전체 글</a>
+			<a href="/policy-feed">정책 피드</a>
+			<a href="/search">검색</a>
 			<a href="/rss.xml">RSS 피드</a>
 			<a href="/about">소개</a>
 			<a href="/privacy">개인정보처리방침</a>
-			<a href="/calculator/">계산기 모음</a>
 		</nav>
 	</div>
 
 	<div class="container footer-bottom">
 		<div class="legal">
 			<p>© {year} {SITE_TITLE}. 모든 권리 보유.</p>
+			<p class="trust">출처 100% 명시 · 계산기 입력값은 브라우저 밖으로 나가지 않습니다</p>
 		</div>
 		<p class="disclaimer">
 			본 사이트의 모든 글은 일반 정보 제공이며 법적·세무·금융 자문이 아닙니다. 개별 사안은 반드시
@@ -50,17 +63,17 @@ const right = cats.slice(4);
 
 <style>
 	.site-footer {
-		background: var(--color-gray-900);
-		color: var(--color-gray-300);
+		background: var(--color-primary-900);
+		color: var(--color-primary-100);
 		margin-top: var(--space-9);
 		padding: var(--space-8) 0 var(--space-5);
 	}
 	.footer-grid {
 		display: grid;
-		grid-template-columns: 1.6fr 1fr 1fr 1fr;
+		grid-template-columns: 1.6fr 1.1fr 1fr 1fr;
 		gap: var(--space-6);
 		padding-bottom: var(--space-6);
-		border-bottom: 1px solid var(--color-gray-800);
+		border-bottom: 1px solid var(--color-primary-800);
 	}
 	@media (max-width: 960px) {
 		.footer-grid {
@@ -72,20 +85,36 @@ const right = cats.slice(4);
 			grid-template-columns: 1fr;
 		}
 	}
+	.brand-row {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		margin: 0 0 var(--space-3);
+	}
+	.f-mark {
+		border-radius: 6px;
+	}
 	.brand-name {
 		color: white;
 		font-size: var(--text-xl);
 		font-weight: var(--weight-bold);
-		margin: 0 0 var(--space-2);
+	}
+	.brand-tag {
+		font-size: var(--text-xs);
+		color: var(--color-accent-200);
+		border: 1px solid rgba(249, 216, 142, 0.35);
+		border-radius: var(--radius-full);
+		padding: 0.15em 0.7em;
 	}
 	.brand-desc {
-		color: var(--color-gray-400);
+		color: var(--color-primary-200);
 		font-size: var(--text-sm);
 		line-height: var(--leading-relaxed);
 		margin: 0 0 var(--space-3);
+		max-width: 340px;
 	}
 	.brand-meta {
-		color: var(--color-gray-500);
+		color: var(--color-primary-300);
 		font-size: var(--text-xs);
 		margin: 0;
 	}
@@ -101,7 +130,7 @@ const right = cats.slice(4);
 		font-size: var(--text-base);
 	}
 	.footer-nav a {
-		color: var(--color-gray-400);
+		color: var(--color-primary-200);
 		text-decoration: none;
 		font-size: var(--text-sm);
 		min-height: 32px;
@@ -125,11 +154,14 @@ const right = cats.slice(4);
 	.legal p {
 		margin: 0;
 	}
+	.trust {
+		color: var(--color-primary-300);
+	}
 	.disclaimer {
 		margin: var(--space-4) 0 0;
 		padding-top: var(--space-4);
-		border-top: 1px dashed var(--color-gray-800);
-		color: var(--color-gray-500);
+		border-top: 1px dashed var(--color-primary-800);
+		color: var(--color-primary-300);
 		font-size: var(--text-xs);
 		line-height: var(--leading-relaxed);
 	}
