@@ -27,7 +27,9 @@
       "title": "청약통장 1순위 조건 — 지역·면적별 정리",
       "focus": "주택청약종합저축 1순위: 수도권 가입 1년+12회 납입(투기과열·조정지역은 2년+24회), 비수도권 6개월. 국민주택은 납입 횟수·인정금액(월 최대 인정액), 민영주택은 지역별 예치금 기준. 세대주 요건·재당첨 제한.",
       "calc": "subscription-score",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-06-11",
+      "publishedSlug": "evergreen-cheongyak-1sunwi"
     },
     {
       "slug": "evergreen-burangwon-jeonmae",
