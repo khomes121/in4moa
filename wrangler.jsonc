@@ -1,0 +1,14 @@
+{
+	// Cloudflare Workers 정적 배포 설정 (명시적 고정)
+	//
+	// 이 파일이 없으면 Workers Builds 가 설정을 자동 생성하면서
+	// SESSION KV 네임스페이스를 매번 새로 provisioning 하려다
+	// "already exists [code: 10014]" 충돌로 배포가 실패한다 (2026-06-10 장애).
+	// 정적 사이트라 KV·세션이 필요 없으므로 assets-only 로 고정한다.
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "in4moa",
+	"compatibility_date": "2026-06-10",
+	"assets": {
+		"directory": "./dist"
+	}
+}
