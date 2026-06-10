@@ -49,10 +49,16 @@ export function kstYesterday(d = new Date()) {
 }
 
 /**
- * 발행 시각 분산: 실행 시각부터 minutesApart 간격으로 n개의 ISO 문자열.
- * 과거·미래 가짜 시각 없이 "실제 발행 시각"을 정직하게 기록한다.
+ * 발행 시각 분산: 실행 시각부터 글마다 랜덤 간격(기본 2~9분)으로 n개의 ISO 문자열.
+ * 과거·미래 가짜 시각 없이 "실제 발행 시각"을 정직하게 기록하되,
+ * 간격을 불규칙하게 해서 기계적 패턴을 없앤다.
  */
-export function spreadPubDates(n, minutesApart = 3, from = new Date()) {
-  return Array.from({ length: n }, (_, i) =>
-    new Date(from.getTime() + i * minutesApart * 60 * 1000).toISOString());
+export function spreadPubDates(n, { minGapMin = 2, maxGapMin = 9, from = new Date() } = {}) {
+  const out = [];
+  let t = from.getTime();
+  for (let i = 0; i < n; i++) {
+    out.push(new Date(t).toISOString());
+    t += (minGapMin + Math.random() * (maxGapMin - minGapMin)) * 60 * 1000;
+  }
+  return out;
 }

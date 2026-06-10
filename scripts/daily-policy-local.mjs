@@ -452,12 +452,15 @@ async function main() {
   }
 
   console.log('[4/8] 황금키워드 스코어링 + 분배');
-  const picks = distribute(unpublished, trends, 5);
+  // 발행량 랜덤화: 뉴스 3~5편 (매일 같은 개수로 찍히는 기계적 패턴 방지)
+  const newsCount = 3 + Math.floor(Math.random() * 3);
+  console.log(`     오늘 뉴스 목표: ${newsCount}편 (랜덤 3~5)`);
+  const picks = distribute(unpublished, trends, newsCount);
   picks.forEach((p, i) => console.log(
     `     ${i + 1}. [${p.kind}] ${p.cat} (${p.items.length}건, 최고점 ${Math.max(...p.items.map(x => x.score ?? 0))})${p.trendKw ? ` 🔥${p.trendKw}` : ''}`));
 
   console.log('[5/8] 생성 + 검수');
-  const pubDates = spreadPubDates(picks.length + 1, 3); // 마지막 1개는 에버그린용
+  const pubDates = spreadPubDates(picks.length + 1); // 랜덤 간격, 마지막 1개는 에버그린용
   let success = 0;
   const results = [], failures = [];
   for (let i = 0; i < picks.length; i++) {
@@ -489,9 +492,12 @@ async function main() {
     }
   }
 
-  console.log('[6/8] 에버그린 1편');
+  console.log('[6/8] 에버그린');
+  // 75% 확률로 1편 (가끔 쉬어 가는 날 — 발행 패턴 자연화. 큐는 그만큼 천천히 소진)
+  const everToday = Math.random() < 0.75;
+  if (!everToday) console.log('     오늘은 에버그린 휴식일 (랜덤 25%)');
   try {
-    const ever = await publishEvergreen(pubDates[picks.length]);
+    const ever = everToday ? await publishEvergreen(pubDates[picks.length]) : null;
     if (ever) {
       console.log(`     ✓ ${ever.slug}.md`);
       console.log(`        ${ever.title.slice(0, 70)}`);
