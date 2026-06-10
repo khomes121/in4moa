@@ -11,8 +11,8 @@ export const SITE_TAGLINE = '돈 되는 생활정보';
 // 사이트 전체에 광고 스크립트·광고 슬롯이 자동 활성화된다.
 // 빈 문자열이면 광고 관련 코드가 일절 출력되지 않는다 (심사 전 상태).
 export const ADSENSE_CLIENT = '';
-// GA4 측정 ID (G-XXXXXXXXXX). 빈 문자열이면 비활성.
-export const GA_MEASUREMENT_ID = '';
+// GA4 측정 ID (속성: 인포모아 / 스트림: 인포모아 웹, 2026-06-10 생성)
+export const GA_MEASUREMENT_ID = 'G-Q504SE1NT9';
 
 // ─── 계산기 목록 (허브·내부링크 공용) ─────────────────────────
 export interface CalculatorMeta {
