@@ -107,6 +107,9 @@ const promoCalcs = (CALC_BY_CAT[category ?? 'news'] ?? [])
 							)}
 						</div>
 					</header>
+
+					<AffiliateCTA category={category} variant="highlight" />
+
 					<slot />
 
 					{

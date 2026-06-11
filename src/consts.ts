@@ -129,8 +129,9 @@ export const AFFILIATE_DISCLOSURE =
 export interface AffiliateOffer {
 	id: string;
 	name: string; // 표기명
-	desc: string; // 한 줄 설명(행동 유도)
+	desc: string; // 한 줄 설명(이득 중심)
 	emoji: string;
+	cta: string; // 버튼 문구(행동 동사)
 	url: string; // 추적 링크 (a= 제휴ID 포함)
 }
 
@@ -140,37 +141,42 @@ const lp = (code: string) => `https://newtip.net/click.php?m=${code}&a=A10070518
 export const AFFILIATES: Record<string, AffiliateOffer> = {
 	credit: {
 		id: 'credit',
-		name: '올크레딧 신용점수 무료조회',
-		desc: '대출·전세 계약 전, 내 신용점수부터 확인',
+		name: '내 신용점수, 무료로 확인하기',
+		desc: '대출·전세 앞두고 있다면 — 올크레딧 30초 무료조회',
 		emoji: '📊',
+		cta: '무료조회',
 		url: lp('allcredit'),
 	},
 	taxbill: {
 		id: 'taxbill',
-		name: '바로빌 전자세금계산서',
-		desc: '사업자 세금계산서·세무 신고 자동화',
+		name: '전자세금계산서 간편 발행',
+		desc: '사업자라면 — 바로빌로 세금계산서·세무신고 자동화',
 		emoji: '🧾',
+		cta: '바로가기',
 		url: lp('barobill'),
 	},
 	cert: {
 		id: 'cert',
-		name: '한국정보인증 공동인증서',
-		desc: '정부지원금·세금 신청에 필요한 인증서 발급',
+		name: '공동인증서 발급받기',
+		desc: '정부지원금·세금 신청에 꼭 필요한 인증서 (한국정보인증)',
 		emoji: '🔐',
+		cta: '발급하기',
 		url: lp('signgate'),
 	},
 	course: {
 		id: 'course',
-		name: 'Udemy 온라인 강의',
-		desc: '창업·실무 스킬 강의 (수시 할인)',
+		name: '창업·실무 온라인 강의',
+		desc: 'Udemy 인기 강의 수시 최대 할인',
 		emoji: '🎓',
+		cta: '강의 보기',
 		url: lp('udemy'),
 	},
 	book: {
 		id: 'book',
-		name: '교보문고',
-		desc: '관련 도서로 더 깊이 알아보기',
+		name: '이 주제, 책으로 더 깊이',
+		desc: '교보문고에서 관련 도서 찾아보기',
 		emoji: '📚',
+		cta: '보러가기',
 		url: lp('kbbook'),
 	},
 };

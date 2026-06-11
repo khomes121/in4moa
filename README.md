@@ -99,13 +99,26 @@ heroImage: ./hero.jpg       # 옵션
 
 승인 후 할 일: ① `ADSENSE_CLIENT` 입력 ② `public/ads.txt` 생성 (`google.com, pub-XXXX, DIRECT, f08c47fec0942fa0`) ③ 재배포.
 
-## 콘텐츠 자동 발행 (일 6편)
+## 콘텐츠 자동 발행 — 파이프라인 v2 (일 6~7편)
 
-- **뉴스 5편** — korea.kr RSS 14개 → 카테고리 분배 → Claude CLI 생성 (기존 파이프라인)
-- **에버그린 1편** — `scripts/evergreen-topics.json` 큐에서 1개씩 소진. 고단가 행동형 키워드(신청·조회·계산) 중심. 큐가 비면 주제를 보충할 것
-- 모든 글에 계산기 내부링크 자동 유도 (프롬프트 지시)
-- **스케줄**: Windows 작업 스케줄러 `Infomoa-DailyPublish` (매일 09:30, `run-daily-task.bat` → `logs/scheduler.log`)
-- 수동 실행: `run-daily.bat` 더블클릭
+```
+RSS 14피드 ──┐
+구글 트렌드 ──┼→ 황금키워드 스코어링 → 뉴스 5편 + 이슈 0-1편(트렌드 매칭 시)
+에버그린 큐 ──┘                        + 에버그린 1편
+        ↓ 각 글: 생성 → frontmatter 정규화 → 검수 에이전트(2차 Claude)
+        ↓ 로컬 astro build 게이트 (실패 파일 _quarantine/ 격리)
+        ↓ git push → CF 자동 배포
+```
+
+- **주제 선정**: 신선도 + 고단가 행동 키워드(지원금·환급·신청·대출...) 가점,
+  생활 무관 소재(외교·MOU·행사) 감점, 급상승 검색어 일치 시 대형 가점
+- **이슈 슬롯**: 구글 트렌드(KR) 키워드가 ① 우리 도메인 ② RSS 근거자료와 3중 매칭될 때만
+  1편 추가 (근거 없으면 발행 안 함 — 환각 방지)
+- **시간 처리**: 전부 KST (`scripts/lib/kst.mjs`). pubDate 는 실행 시각 기준 분 단위 분산 (미래 날조 없음)
+- **스케줄**: 작업 스케줄러 `Infomoa-DailyPublish` 매일 09:30 + **놓친 실행 보충**(StartWhenAvailable).
+  하루 1회 가드 내장 — 중복 실행돼도 자동 스킵 (`--force` 로 무시)
+- 수동: `run-daily.bat` / 옵션: `--dry-run` `--no-review` `--force`
+- 에버그린 큐(`scripts/evergreen-topics.json`)가 비면 주제 보충할 것
 
 ## 배포 (Cloudflare Pages)
 

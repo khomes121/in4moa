@@ -1,41 +1,153 @@
 ---
-// 카테고리별 제휴(어필리에이트) CTA. BlogPost 레이아웃에서 본문 뒤에 자동 렌더.
-// 노출 제휴는 consts.ts 의 AFFILIATE_BY_CAT 에서 관리 → 한 곳만 고치면 전 글 반영.
+// 제휴(어필리에이트) CTA. CRO 목적 2가지 변형:
+//  - variant="highlight": 본문 상단(인트로 직후)용 눈에 띄는 단일 배너. 카드 전체 클릭.
+//  - variant="inline"   : 본문 하단용 목록형(기본).
+// 노출 제휴는 consts.ts 의 AFFILIATE_BY_CAT / keys 로 관리 → 한 곳만 고치면 전 글 반영.
 import { AFFILIATES, AFFILIATE_BY_CAT, AFFILIATE_DISCLOSURE, AFFILIATE_ENABLED } from '../consts';
 import type { CategorySlug } from '../consts';
 
 interface Props {
 	category?: string;
-	keys?: string[]; // 명시적 제휴 키 배열 (계산기 등에서 직접 지정). 있으면 category 보다 우선.
+	keys?: string[]; // 명시적 제휴 키 배열 (계산기 등). 있으면 category 보다 우선.
+	variant?: 'inline' | 'highlight';
 }
-const { category, keys: keyProp } = Astro.props;
+const { category, keys: keyProp, variant = 'inline' } = Astro.props;
 const resolved = keyProp ?? AFFILIATE_BY_CAT[(category ?? 'news') as CategorySlug] ?? [];
-const keys = AFFILIATE_ENABLED ? resolved : [];
-const offers = keys.map((k) => AFFILIATES[k]).filter(Boolean);
+const all = AFFILIATE_ENABLED ? resolved.map((k) => AFFILIATES[k]).filter(Boolean) : [];
+// highlight 는 가장 관련도 높은 1개만 크게 노출
+const offers = variant === 'highlight' ? all.slice(0, 1) : all;
 ---
 
 {
-	offers.length > 0 && (
-		<aside class="aff-promo" aria-label="추천 서비스">
-			<p class="aff-title">💡 함께 챙기면 좋은 서비스</p>
-			<ul class="aff-list">
+	offers.length > 0 &&
+		(variant === 'highlight' ? (
+			<aside class="aff-hi" aria-label="추천 서비스(광고)">
 				{offers.map((o) => (
-					<li>
-						<a href={o!.url} target="_blank" rel="sponsored nofollow noopener">
-							<span class="name">
-								{o!.emoji} {o!.name}
-							</span>
+					<a class="aff-hi-card" href={o!.url} target="_blank" rel="sponsored nofollow noopener">
+						<span class="ic">{o!.emoji}</span>
+						<span class="txt">
+							<span class="name">{o!.name}</span>
 							<span class="desc">{o!.desc}</span>
-						</a>
-					</li>
+						</span>
+						<span class="btn">{o!.cta} →</span>
+						<span class="ad">광고</span>
+					</a>
 				))}
-			</ul>
-			<p class="aff-disc">{AFFILIATE_DISCLOSURE}</p>
-		</aside>
-	)
+			</aside>
+		) : (
+			<aside class="aff-promo" aria-label="추천 서비스(광고)">
+				<p class="aff-title">
+					이런 서비스도 도움이 돼요 <span class="ad">광고</span>
+				</p>
+				<ul class="aff-list">
+					{offers.map((o) => (
+						<li>
+							<a href={o!.url} target="_blank" rel="sponsored nofollow noopener">
+								<span class="txt">
+									<span class="name">
+										{o!.emoji} {o!.name}
+									</span>
+									<span class="desc">{o!.desc}</span>
+								</span>
+								<span class="btn">{o!.cta} →</span>
+							</a>
+						</li>
+					))}
+				</ul>
+				<p class="aff-disc">{AFFILIATE_DISCLOSURE}</p>
+			</aside>
+		))
 }
 
 <style>
+	/* 공통 광고 라벨 */
+	.ad {
+		display: inline-block;
+		font-size: 10px;
+		font-weight: var(--weight-bold);
+		color: var(--text-meta);
+		border: 1px solid var(--border-default);
+		border-radius: var(--radius-sm, 4px);
+		padding: 0 4px;
+		line-height: 1.5;
+		vertical-align: middle;
+	}
+
+	/* ── highlight (상단 배너) ───────────────────────── */
+	.aff-hi {
+		margin: var(--space-5) 0;
+	}
+	.aff-hi-card {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		padding: var(--space-4);
+		background: var(--bg-card);
+		border: 1px solid var(--border-default);
+		border-left: 4px solid var(--text-link);
+		border-radius: var(--radius-md);
+		text-decoration: none;
+		color: inherit;
+		transition:
+			box-shadow 0.15s ease,
+			transform 0.15s ease;
+	}
+	.aff-hi-card:hover {
+		box-shadow: var(--shadow-md);
+		transform: translateY(-1px);
+		text-decoration: none;
+	}
+	.aff-hi-card .ic {
+		font-size: var(--text-2xl);
+		flex-shrink: 0;
+	}
+	.aff-hi-card .txt {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+		flex: 1;
+	}
+	.aff-hi-card .name {
+		font-weight: var(--weight-bold);
+		color: var(--text-heading);
+		font-size: var(--text-base);
+	}
+	.aff-hi-card .desc {
+		font-size: var(--text-sm);
+		color: var(--text-meta);
+		line-height: var(--leading-snug);
+	}
+	.aff-hi-card .btn {
+		flex-shrink: 0;
+		background: var(--text-link);
+		color: #fff;
+		font-weight: var(--weight-bold);
+		font-size: var(--text-sm);
+		padding: var(--space-2) var(--space-4);
+		border-radius: var(--radius-md);
+		white-space: nowrap;
+	}
+	.aff-hi-card .ad {
+		position: absolute;
+		top: 6px;
+		right: 8px;
+		border: none;
+		padding: 0;
+		font-size: 10px;
+	}
+	@media (max-width: 560px) {
+		.aff-hi-card {
+			flex-wrap: wrap;
+		}
+		.aff-hi-card .btn {
+			width: 100%;
+			text-align: center;
+		}
+	}
+
+	/* ── inline (하단 목록) ──────────────────────────── */
 	.aff-promo {
 		margin-top: var(--space-7);
 		padding-top: var(--space-5);
@@ -54,7 +166,9 @@ const offers = keys.map((k) => AFFILIATES[k]).filter(Boolean);
 		gap: var(--space-2);
 	}
 	.aff-list a {
-		display: block;
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
 		padding: var(--space-3) var(--space-4);
 		background: var(--bg-card);
 		border: 1px solid var(--border-default);
@@ -63,20 +177,39 @@ const offers = keys.map((k) => AFFILIATES[k]).filter(Boolean);
 		color: inherit;
 	}
 	.aff-list a:hover {
-		border-color: var(--color-primary-300);
+		border-color: var(--text-link);
 		box-shadow: var(--shadow-md);
 		text-decoration: none;
 	}
+	.aff-list .txt {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+		flex: 1;
+	}
 	.aff-list .name {
-		display: block;
 		font-weight: var(--weight-semibold);
 		color: var(--text-heading);
 	}
 	.aff-list .desc {
-		display: block;
 		font-size: var(--text-sm);
 		color: var(--text-meta);
-		margin-top: 2px;
+		line-height: var(--leading-snug);
+	}
+	.aff-list .btn {
+		flex-shrink: 0;
+		border: 1px solid var(--text-link);
+		color: var(--text-link);
+		font-weight: var(--weight-bold);
+		font-size: var(--text-sm);
+		padding: 6px var(--space-3);
+		border-radius: var(--radius-md);
+		white-space: nowrap;
+	}
+	.aff-list a:hover .btn {
+		background: var(--text-link);
+		color: #fff;
 	}
 	.aff-disc {
 		margin: var(--space-3) 0 0;
