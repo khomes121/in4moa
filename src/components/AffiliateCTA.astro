@@ -1,0 +1,87 @@
+---
+// 카테고리별 제휴(어필리에이트) CTA. BlogPost 레이아웃에서 본문 뒤에 자동 렌더.
+// 노출 제휴는 consts.ts 의 AFFILIATE_BY_CAT 에서 관리 → 한 곳만 고치면 전 글 반영.
+import { AFFILIATES, AFFILIATE_BY_CAT, AFFILIATE_DISCLOSURE, AFFILIATE_ENABLED } from '../consts';
+import type { CategorySlug } from '../consts';
+
+interface Props {
+	category?: string;
+	keys?: string[]; // 명시적 제휴 키 배열 (계산기 등에서 직접 지정). 있으면 category 보다 우선.
+}
+const { category, keys: keyProp } = Astro.props;
+const resolved = keyProp ?? AFFILIATE_BY_CAT[(category ?? 'news') as CategorySlug] ?? [];
+const keys = AFFILIATE_ENABLED ? resolved : [];
+const offers = keys.map((k) => AFFILIATES[k]).filter(Boolean);
+---
+
+{
+	offers.length > 0 && (
+		<aside class="aff-promo" aria-label="추천 서비스">
+			<p class="aff-title">💡 함께 챙기면 좋은 서비스</p>
+			<ul class="aff-list">
+				{offers.map((o) => (
+					<li>
+						<a href={o!.url} target="_blank" rel="sponsored nofollow noopener">
+							<span class="name">
+								{o!.emoji} {o!.name}
+							</span>
+							<span class="desc">{o!.desc}</span>
+						</a>
+					</li>
+				))}
+			</ul>
+			<p class="aff-disc">{AFFILIATE_DISCLOSURE}</p>
+		</aside>
+	)
+}
+
+<style>
+	.aff-promo {
+		margin-top: var(--space-7);
+		padding-top: var(--space-5);
+		border-top: 1px solid var(--border-default);
+	}
+	.aff-title {
+		font-weight: var(--weight-bold);
+		color: var(--text-heading);
+		margin: 0 0 var(--space-3);
+	}
+	.aff-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: var(--space-2);
+	}
+	.aff-list a {
+		display: block;
+		padding: var(--space-3) var(--space-4);
+		background: var(--bg-card);
+		border: 1px solid var(--border-default);
+		border-radius: var(--radius-md);
+		text-decoration: none;
+		color: inherit;
+	}
+	.aff-list a:hover {
+		border-color: var(--color-primary-300);
+		box-shadow: var(--shadow-md);
+		text-decoration: none;
+	}
+	.aff-list .name {
+		display: block;
+		font-weight: var(--weight-semibold);
+		color: var(--text-heading);
+	}
+	.aff-list .desc {
+		display: block;
+		font-size: var(--text-sm);
+		color: var(--text-meta);
+		margin-top: 2px;
+	}
+	.aff-disc {
+		margin: var(--space-3) 0 0;
+		font-size: var(--text-xs);
+		color: var(--text-meta);
+		line-height: var(--leading-snug);
+	}
+</style>

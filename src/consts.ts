@@ -117,3 +117,80 @@ export const CATEGORIES: CategoryMeta[] = [
 ];
 
 export const CATEGORY_SLUGS = CATEGORIES.map((c) => c.slug) as [CategorySlug, ...CategorySlug[]];
+
+// ─── 제휴(어필리에이트) ─────────────────────────────────────
+// 링크프라이스 제휴 링크. 추적 ID(a=A100705184)가 박혀 있어야 수익이 인정된다.
+// 더 맞는 제휴(예: 쿠팡)가 승인되면 아래 url 만 갈아끼우면 전 글에 자동 반영된다.
+// 전체 끄려면 AFFILIATE_ENABLED = false.
+export const AFFILIATE_ENABLED = true;
+export const AFFILIATE_DISCLOSURE =
+	'제휴 링크 — 위 링크로 가입·구매 시 인포모아가 일정 수수료를 받을 수 있으며, 구매가는 동일합니다.';
+
+export interface AffiliateOffer {
+	id: string;
+	name: string; // 표기명
+	desc: string; // 한 줄 설명(행동 유도)
+	emoji: string;
+	url: string; // 추적 링크 (a= 제휴ID 포함)
+}
+
+// 링크프라이스 클릭 링크 빌더 (a= 는 사용자 제휴 ID)
+const lp = (code: string) => `https://newtip.net/click.php?m=${code}&a=A100705184&l=0000`;
+
+export const AFFILIATES: Record<string, AffiliateOffer> = {
+	credit: {
+		id: 'credit',
+		name: '올크레딧 신용점수 무료조회',
+		desc: '대출·전세 계약 전, 내 신용점수부터 확인',
+		emoji: '📊',
+		url: lp('allcredit'),
+	},
+	taxbill: {
+		id: 'taxbill',
+		name: '바로빌 전자세금계산서',
+		desc: '사업자 세금계산서·세무 신고 자동화',
+		emoji: '🧾',
+		url: lp('barobill'),
+	},
+	cert: {
+		id: 'cert',
+		name: '한국정보인증 공동인증서',
+		desc: '정부지원금·세금 신청에 필요한 인증서 발급',
+		emoji: '🔐',
+		url: lp('signgate'),
+	},
+	course: {
+		id: 'course',
+		name: 'Udemy 온라인 강의',
+		desc: '창업·실무 스킬 강의 (수시 할인)',
+		emoji: '🎓',
+		url: lp('udemy'),
+	},
+	book: {
+		id: 'book',
+		name: '교보문고',
+		desc: '관련 도서로 더 깊이 알아보기',
+		emoji: '📚',
+		url: lp('kbbook'),
+	},
+};
+
+// 카테고리별 노출 제휴 (관련도 순). 빈 배열이면 그 카테고리는 미노출.
+export const AFFILIATE_BY_CAT: Record<CategorySlug, string[]> = {
+	realestate: ['credit', 'book'],
+	tax: ['taxbill', 'credit'],
+	loan: ['credit'],
+	subsidy: ['cert', 'credit'],
+	business: ['taxbill', 'course'],
+	calculator: ['credit'],
+	news: ['credit'],
+};
+
+// 계산기 페이지별 노출 제휴 (slug 기준). 대출·세금·부동산 계산 직후라 신용조회가 자연스럽다.
+export const AFFILIATE_BY_CALC: Record<string, string[]> = {
+	dsr: ['credit'],
+	'acquisition-tax': ['credit'],
+	'brokerage-fee': ['credit'],
+	'jeonse-conversion': ['credit'],
+	'subscription-score': ['credit'],
+};

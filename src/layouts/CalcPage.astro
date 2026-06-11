@@ -3,7 +3,8 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import AdSlot from '../components/AdSlot.astro';
-import { CALCULATORS, SITE_TITLE } from '../consts';
+import AffiliateCTA from '../components/AffiliateCTA.astro';
+import { AFFILIATE_BY_CALC, CALCULATORS, SITE_TITLE } from '../consts';
 
 interface Props {
 	slug: string;
@@ -52,6 +53,8 @@ const appLd = {
 				<AdSlot />
 
 				<slot name="content" />
+
+				<AffiliateCTA keys={AFFILIATE_BY_CALC[slug] ?? ['credit']} />
 
 				<aside class="callout callout-disclaimer">
 					<p class="callout-title">⚠️ 면책</p>
