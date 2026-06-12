@@ -37,7 +37,9 @@
       "title": "분양권 전매 절차와 비용 — 양도세·전매제한 핵심",
       "focus": "전매제한 기간 확인 방법(모집공고). 전매 절차: 매매계약→실거래신고→명의변경(시행사 동의). 분양권 양도세율(보유 1년 미만 70%, 1년 이상 60% — 변동 가능성 명시). 불법 전매 리스크.",
       "calc": "acquisition-tax",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-06-12",
+      "publishedSlug": "evergreen-burangwon-jeonmae"
     },
     {
       "slug": "evergreen-jongbuse-gujo",
