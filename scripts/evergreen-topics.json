@@ -47,7 +47,9 @@
       "title": "종합부동산세 누가 얼마나 내나 — 공제액·계산 구조",
       "focus": "과세 기준일 6/1. 주택 공시가격 합산 - 기본공제(9억, 1세대1주택 12억) × 공정시장가액비율 → 과세표준. 1주택 고령자·장기보유 세액공제(최대 80%). 부부 공동명의 특례. 정확 세율표는 변동 가능하므로 국세청 확인 유도.",
       "calc": "acquisition-tax",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-06-15",
+      "publishedSlug": "evergreen-jongbuse-gujo"
     },
     {
       "slug": "evergreen-jeungyeose-myeonje",
