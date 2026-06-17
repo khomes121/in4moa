@@ -57,7 +57,9 @@
       "title": "증여세 면제 한도 — 가족 간 증여 비과세 금액 정리",
       "focus": "10년 합산 공제: 배우자 6억, 성인 자녀 5천만(미성년 2천만), 기타친족 1천만. 혼인·출산 증여공제 1억 추가(요건). 증여세율 10~50% 누진. 신고기한(증여일 속한 달 말일부터 3개월)·자진신고 세액공제 3%.",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-06-17",
+      "publishedSlug": "evergreen-jeungyeose-myeonje"
     },
     {
       "slug": "evergreen-jaesanse-iljeong",
