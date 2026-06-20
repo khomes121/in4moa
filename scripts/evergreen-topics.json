@@ -67,7 +67,9 @@
       "title": "재산세 납부 일정·조회·카드 혜택 총정리",
       "focus": "과세 기준일 6/1. 주택분 7월/9월 분납(20만 이하 7월 일괄). 위택스·이택스 조회 방법. 카드사 무이자 할부·캐시백 이벤트 활용. 납부 지연 가산세.",
       "calc": "acquisition-tax",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-06-20",
+      "publishedSlug": "evergreen-jaesanse-iljeong"
     },
     {
       "slug": "evergreen-didimdol-jagyeok",
