@@ -77,7 +77,9 @@
       "title": "디딤돌 대출 자격·한도·금리 — 신청 전 체크리스트",
       "focus": "무주택 세대주, 부부합산 소득·자산 기준(신혼·다자녀 우대), 주택가격·전용면적 제한. 한도와 LTV·DTI 적용. 기금e든든 신청 절차. 구체 수치는 변동 잦으므로 주택도시기금 공식 확인 유도 + 글에는 구조·절차 중심.",
       "calc": "dsr",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-06-22",
+      "publishedSlug": "evergreen-didimdol-jagyeok"
     },
     {
       "slug": "evergreen-jeonse-daechul-bigyo",
