@@ -97,7 +97,9 @@
       "title": "중도상환수수료 아끼는 법 — 면제 시점·계산 구조",
       "focus": "통상 3년 이내 상환 시 부과, 잔여기간에 비례해 감소. 수수료율 인하 추세(2025년 개편 — 정확 수치는 은행 확인). 일부상환 연 한도 무료 조항 활용. 대환 시 총비용 비교 방법.",
       "calc": "dsr",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-06-28",
+      "publishedSlug": "evergreen-jungdosanghwan"
     },
     {
       "slug": "evergreen-geunro-jangryeogeum",
