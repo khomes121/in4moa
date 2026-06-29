@@ -107,7 +107,9 @@
       "title": "근로장려금 신청 자격·지급액·신청 방법",
       "focus": "단독·홑벌이·맞벌이 가구별 소득 상한과 최대 지급액(변동 — 홈택스 확인 유도). 재산 요건(가구 합산). 정기신청 5월, 반기신청 제도. 홈택스·ARS·세무서 신청 경로. 자동신청 동의 제도.",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-06-29",
+      "publishedSlug": "evergreen-geunro-jangryeogeum"
     },
     {
       "slug": "evergreen-silup-geupyeo",
