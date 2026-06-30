@@ -117,7 +117,9 @@
       "title": "실업급여(구직급여) 조건·금액·신청 절차",
       "focus": "이직 전 18개월 중 피보험 180일 이상 + 비자발적 이직. 자발적 퇴사 예외 사유. 지급액 = 평균임금 60%(상한·하한 있음, 변동). 소정급여일수(연령·가입기간별 120~270일). 워크넷 구직등록→수급자격 신청→실업인정.",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-06-30",
+      "publishedSlug": "evergreen-silup-geupyeo"
     },
     {
       "slug": "evergreen-jugeo-geupyeo",
