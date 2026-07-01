@@ -127,7 +127,9 @@
       "title": "주거급여 신청 자격과 지원 금액 — 임차·자가 모두",
       "focus": "중위소득 기준(% 변동 — 복지로 확인), 부양의무자 기준 폐지. 임차가구: 지역·가구원수별 기준임대료 상한. 자가가구: 수선비 지원. 복지로·주민센터 신청. 청년 분리지급 제도.",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-01",
+      "publishedSlug": "evergreen-jugeo-geupyeo"
     },
     {
       "slug": "evergreen-cheongnyeon-doyak",
