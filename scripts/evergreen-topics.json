@@ -137,7 +137,9 @@
       "title": "청년도약계좌 조건·정부기여금 — 가입 전 따져볼 것",
       "focus": "만 19~34세, 개인소득·가구소득 요건. 월 납입 한도와 소득 구간별 정부기여금 매칭. 5년 만기 구조, 중도해지 불이익과 특별중도해지 사유. 청년희망적금과 중복 문제. 수치 변동 가능성 명시.",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-03",
+      "publishedSlug": "evergreen-cheongnyeon-doyak"
     },
     {
       "slug": "evergreen-gicho-yeongeum",
