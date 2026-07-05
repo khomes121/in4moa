@@ -147,7 +147,9 @@
       "title": "기초연금 수급 자격 — 소득인정액 계산 구조",
       "focus": "만 65세 이상, 소득인정액 하위 70%. 소득인정액 = 소득평가액 + 재산의 소득환산액(주택·금융재산 공제 구조). 국민연금 연계 감액. 복지로 모의계산 활용 안내. 신청주의(자동 지급 아님) 강조.",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-05",
+      "publishedSlug": "evergreen-gicho-yeongeum"
     },
     {
       "slug": "evergreen-sajangnim-deungrok",
