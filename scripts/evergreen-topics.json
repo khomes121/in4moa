@@ -157,7 +157,9 @@
       "title": "사업자등록 절차 — 홈택스로 하루 만에 끝내기",
       "focus": "홈택스 온라인 신청 절차(업종코드 선택 팁). 일반·간이·면세 구분 선택. 임대차계약서 등 필요 서류. 사업 개시 20일 이내 등록(미등록 가산세·매입세액 불공제 불이익). 공동사업자·온라인쇼핑몰 통신판매업 신고.",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-06",
+      "publishedSlug": "evergreen-sajangnim-deungrok"
     },
     {
       "slug": "evergreen-ganee-vs-ilban",
