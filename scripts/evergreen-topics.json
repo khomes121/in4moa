@@ -167,7 +167,9 @@
       "title": "간이과세 vs 일반과세 — 뭐가 유리한지 판단 기준",
       "focus": "간이과세 기준(연 매출 — 변동 가능, 홈택스 확인). 세금계산서 발급·매입세액공제 차이. 부가세 부담 비교 시뮬레이션 사고법. 간이→일반 전환 시점과 포기 신고. 초기 시설투자 크면 일반과세가 유리한 이유(환급).",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-09",
+      "publishedSlug": "evergreen-ganee-vs-ilban"
     },
     {
       "slug": "evergreen-bugase-iljeong",
