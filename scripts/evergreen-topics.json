@@ -177,7 +177,9 @@
       "title": "부가가치세 신고 일정·가산세 — 사업자 연간 달력",
       "focus": "일반과세 1기(1~6월분, 7/25 신고)·2기(7~12월분, 다음해 1/25). 예정고지·예정신고. 간이과세자 연 1회(1/25). 무신고·납부지연 가산세 구조. 홈택스 신고 경로와 전자신고 세액공제.",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-10",
+      "publishedSlug": "evergreen-bugase-iljeong"
     },
     {
       "slug": "evergreen-sosanggongin-jageum",
