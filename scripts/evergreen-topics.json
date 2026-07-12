@@ -197,7 +197,9 @@
       "title": "취득세 계산기 활용 가이드 — 사례 5개로 보는 내 세금",
       "focus": "사이트 내 취득세 계산기(/calculator/acquisition-tax/) 사용법. 사례: 5억 1주택, 7.5억 1주택(구간 공식), 조정지역 2주택 8% 중과, 85㎡ 초과 농특세, 일시적 2주택. 각 사례 표로 정리. 계산기 링크 본문 3회 이상.",
       "calc": "acquisition-tax",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-12",
+      "publishedSlug": "evergreen-chwideukse-guide"
     },
     {
       "slug": "evergreen-bokbi-guide",
