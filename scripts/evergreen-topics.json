@@ -207,7 +207,9 @@
       "title": "중개수수료 계산기 활용 가이드 — 협의로 깎는 실전 팁",
       "focus": "사이트 내 중개보수 계산기(/calculator/brokerage-fee/) 사용법. 매매 5억/10억, 전세 3억, 월세 1000/70 사례. 상한요율 vs 협의 실무(계약 전 문자로 확정 팁). 현금영수증·VAT 체크.",
       "calc": "brokerage-fee",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-14",
+      "publishedSlug": "evergreen-bokbi-guide"
     },
     {
       "slug": "evergreen-dsr-guide",
