@@ -217,7 +217,9 @@
       "title": "DSR 계산기로 내 대출 한도 미리 보는 법",
       "focus": "사이트 내 DSR 계산기(/calculator/dsr/) 사용법. 연소득 6천·대출 3억 사례, 스트레스 금리 적용 전후 비교, 만기 30년 vs 40년 차이. 한도 늘리는 합법적 방법(만기 연장·고정금리·기존대출 정리).",
       "calc": "dsr",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-16",
+      "publishedSlug": "evergreen-dsr-guide"
     },
     {
       "slug": "evergreen-gajeom-guide",
