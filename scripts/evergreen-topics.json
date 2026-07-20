@@ -227,7 +227,9 @@
       "title": "청약 가점 계산기 — 내 점수로 어디까지 노릴 수 있나",
       "focus": "사이트 내 청약가점 계산기(/calculator/subscription-score/) 사용법. 30대 신혼/40대 4인 가구/50대 장기 무주택 사례별 점수. 점수대별 전략(가점제 vs 추첨제 vs 특공). 부양가족 산정 실수 주의.",
       "calc": "subscription-score",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-20",
+      "publishedSlug": "evergreen-gajeom-guide"
     },
     {
       "slug": "evergreen-jeonwolse-guide",
