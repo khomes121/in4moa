@@ -237,7 +237,9 @@
       "title": "전월세 전환 계산기 — 갱신 때 월세 적정선 검증하기",
       "focus": "사이트 내 전월세 전환 계산기(/calculator/jeonse-conversion/) 사용법. 전세 3억→보증금 5천 월세 전환 사례, 법정 전환율 초과 검증 사례, 월세→전세 역산. 갱신요구권과 5% 상한 관계.",
       "calc": "jeonse-conversion",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-22",
+      "publishedSlug": "evergreen-jeonwolse-guide"
     },
     {
       "slug": "evergreen-yangdose-sinngo",
