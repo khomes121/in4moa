@@ -257,7 +257,9 @@
       "title": "전입신고·확정일자 — 보증금 지키는 순서가 중요하다",
       "focus": "대항력 = 주택 인도 + 전입신고(다음날 0시 효력). 확정일자 = 우선변제권. 정부24 온라인 전입신고, 인터넷등기소 확정일자. 잔금일에 전입+확정일자 당일 처리 루틴. 임대차 신고제와 확정일자 자동 부여.",
       "calc": "jeonse-conversion",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-25",
+      "publishedSlug": "evergreen-jeonipsingo"
     },
     {
       "slug": "evergreen-chulsan-jiwon",
