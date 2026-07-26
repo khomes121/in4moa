@@ -267,7 +267,9 @@
       "title": "출산 지원금 한눈에 — 첫만남이용권부터 부모급여까지",
       "focus": "첫만남이용권(바우처), 부모급여(0세·1세 월 지급액 — 변동 확인 유도), 아동수당, 지자체별 출산축하금. 신청 경로(행복출산 원스톱). 육아휴직 급여와의 관계 간단 언급.",
       "calc": null,
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-26",
+      "publishedSlug": "evergreen-chulsan-jiwon"
     },
     {
       "slug": "evergreen-jutaek-yeongeum",
