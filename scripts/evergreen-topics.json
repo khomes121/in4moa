@@ -277,7 +277,9 @@
       "title": "주택연금 수령액과 가입 조건 — 노후 현금흐름 만들기",
       "focus": "만 55세 이상, 공시가격 기준 주택(한도 변동 — HF 확인). 종신지급·확정기간 방식. 수령액 결정 요인(연령·주택가격·금리). 중도해지 시 불이익. 가입자 사망 시 배우자 승계. HF 예상연금 조회 안내.",
       "calc": "dsr",
-      "done": false
+      "done": true,
+      "publishedAt": "2026-07-28",
+      "publishedSlug": "evergreen-jutaek-yeongeum"
     }
   ]
 }
